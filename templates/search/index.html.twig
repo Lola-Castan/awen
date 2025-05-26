@@ -88,7 +88,7 @@
                 </h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {% for product in results.products %}
-                        <a href="{{ path('product_show', {'id': product.id}) }}" class="group">
+                        <a href="{{ path('app_product_show', {'id': product.id}) }}" class="group">
                             <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden">
                                 {% if product.mainImage %}
                                     <div class="aspect-w-16 aspect-h-9">
