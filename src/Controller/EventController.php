@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Event;
 use App\Entity\EventUser;
+use App\Entity\EventCategory;
 use App\Enum\EventStatus;
 use App\Enum\EventUserStatus;
 use App\Repository\EventRepository;
@@ -19,13 +20,56 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class EventController extends AbstractController
 {
     #[Route('/', name: 'app_event_index', methods: ['GET'])]
-    public function index(EventRepository $eventRepository): Response
-    {
-        // Récupérer uniquement les événements publiés et annulés
-        $events = $eventRepository->findByStatuses([EventStatus::Published, EventStatus::Cancelled]);
+    public function index(
+        Request $request,
+        EventRepository $eventRepository,
+        EntityManagerInterface $entityManager
+    ): Response {
+        // Récupérer les paramètres de filtre
+        $categoryId = $request->query->get('category');
+        $period = $request->query->get('period', 'upcoming');
+        $sort = $request->query->get('sort', 'upcoming');
+
+        // Récupérer la catégorie si un ID est fourni
+        $category = null;
+        if ($categoryId) {
+            $category = $entityManager->getRepository(EventCategory::class)->find($categoryId);
+        }
+
+        // Options de tri disponibles
+        $sortOptions = [
+            'upcoming' => 'À venir',
+            'date_asc' => 'Date (croissant)',
+            'date_desc' => 'Date (décroissant)',
+            'title_asc' => 'Nom (A-Z)',
+            'title_desc' => 'Nom (Z-A)',
+            'popular' => 'Popularité'
+        ];
+
+        // Options de période disponibles
+        $periodOptions = [
+            'all' => 'Tous',
+            'upcoming' => 'À venir',
+            'today' => "Aujourd'hui",
+            'week' => 'Cette semaine',
+            'month' => 'Ce mois',
+            'past' => 'Passés'
+        ];
+
+        // Récupérer toutes les catégories pour le filtre
+        $categories = $entityManager->getRepository(EventCategory::class)->findAll();
+
+        // Récupérer les événements filtrés
+        $events = $eventRepository->findFiltered($category, $period, $sort);
         
         return $this->render('event/index.html.twig', [
             'events' => $events,
+            'categories' => $categories,
+            'current_category' => $category,
+            'sort_options' => $sortOptions,
+            'current_sort' => $sort,
+            'period_options' => $periodOptions,
+            'current_period' => $period,
         ]);
     }
 
