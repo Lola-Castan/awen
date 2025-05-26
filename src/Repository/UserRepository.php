@@ -41,8 +41,9 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     public function findCreators(?Category $category = null, ?string $sort = 'newest'): array
     {
         $qb = $this->createQueryBuilder('u')
-            ->leftJoin('u.products', 'p')
-            ->groupBy('u.id');
+            ->innerJoin('u.roles', 'r')
+            ->andWhere('r.name = :role')
+            ->setParameter('role', 'ROLE_CREATOR');
 
         if ($category) {
             $qb->innerJoin('u.categories', 'cat')
@@ -59,7 +60,9 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
                 $qb->orderBy('u.username', 'DESC');
                 break;
             case 'products_count':
-                $qb->orderBy('COUNT(p.id)', 'DESC');
+                $qb->leftJoin('u.products', 'p')
+                   ->groupBy('u.id')
+                   ->orderBy('COUNT(p.id)', 'DESC');
                 break;
             case 'newest':
             default:
