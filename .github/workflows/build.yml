@@ -4,13 +4,13 @@ on:
   release:
     types: [published]
   push:
-    branches: [master, develop]
+    branches: [develop]
   workflow_dispatch:
 
 jobs:
   build:
     name: Build & Publish Docker Image
-    if: (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/develop') && !contains(github.event.head_commit.message, '[skip ci]')
+    if: (github.ref == 'refs/heads/develop') && !contains(github.event.head_commit.message, '[skip ci]')
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout
@@ -31,7 +31,7 @@ jobs:
         with:
           images: lcastan/awen
           tags: |
-            type=raw,value=master
+            type=raw,value=develop
             type=raw,value=sha-{{ sha }}
 
       - name: Build and push Docker image (amd64)
