@@ -3,21 +3,37 @@
 namespace App\Service;
 
 use App\Entity\Product;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class CartService
 {
     private $requestStack;
+    private $entityManager;
     private const CART_SESSION_KEY = 'cart';
 
-    public function __construct(RequestStack $requestStack)
+    public function __construct(RequestStack $requestStack, EntityManagerInterface $entityManager)
     {
         $this->requestStack = $requestStack;
+        $this->entityManager = $entityManager;
     }
 
     public function getCart(): array
     {
-        return $this->requestStack->getSession()->get(self::CART_SESSION_KEY, []);
+        $cart = $this->requestStack->getSession()->get(self::CART_SESSION_KEY, []);
+        $productRepository = $this->entityManager->getRepository(Product::class);
+        
+        // Recharger les produits depuis la base de données
+        foreach ($cart as $productId => $item) {
+            if (isset($item['product'])) {
+                $product = $productRepository->find($productId);
+                if ($product) {
+                    $cart[$productId]['product'] = $product;
+                }
+            }
+        }
+        
+        return $cart;
     }
 
     public function add(Product $product, int $quantity = 1): void

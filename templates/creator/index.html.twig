@@ -22,8 +22,8 @@
                 <div class="relative h-48">
                     {% if creator.creatorInfo.coverImage %}
                         <img src="{{ asset('uploads/images/' ~ creator.creatorInfo.coverImage) }}" 
-                             alt="{{ creator.creatorInfo.displayName }}"
-                             class="object-cover w-full h-full">
+                            alt="{{ creator.creatorInfo.displayName }}"
+                            class="object-cover w-full h-full">
                     {% endif %}
                 </div>
                 
@@ -44,7 +44,7 @@
                             {{ creator.products|length }} produits
                         </div>
                         <a href="{{ path('app_creator_show', {'id': creator.id}) }}" 
-                           class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-primary/90">
+                            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-primary/90">
                             Voir le profil
                         </a>
                     </div>

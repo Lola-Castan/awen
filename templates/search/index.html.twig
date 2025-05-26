@@ -52,7 +52,7 @@
                         <a href="{{ path('app_creator_show', {'id': creator.id}) }}" class="block group">
                             <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow p-4 flex items-center space-x-4">
                                 {% if creator.profilePicture %}
-                                    <img src="{{ asset('uploads/profile/' ~ creator.profilePicture) }}" alt="{{ creator.username }}" class="w-16 h-16 rounded-full object-cover">
+                                    <img src="{{ asset('uploads/profile_pictures/' ~ creator.profilePicture) }}" alt="{{ creator.username }}" class="w-16 h-16 rounded-full object-cover">
                                 {% else %}
                                     <div class="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center">
                                         <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
