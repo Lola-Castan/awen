@@ -177,7 +177,7 @@
                         Événement annulé
                     </div>
                 {% elseif not app.user %}
-                    <a href="{{ path('login') }}?redirect={{ path('app_event_show', {'id': event.id}) }}" class="py-2 px-6 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors duration-300">
+                    <a href="{{ path('app_login') }}?redirect={{ path('app_event_show', {'id': event.id}) }}" class="py-2 px-6 bg-blue-600 hover:bg-blue-700 text-white rounded-md transition-colors duration-300">
                         Se connecter pour participer
                     </a>
                 {% endif %}

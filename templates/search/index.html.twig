@@ -1,0 +1,148 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Recherche{% endblock %}
+
+{% block body %}
+<div class="container py-4">
+    <div class="row">
+        <div class="col-12">
+            {{ form_start(form, {'attr': {'class': 'mb-4'}}) }}
+                <div class="input-group">
+                    {{ form_widget(form.query) }}
+                    <button class="btn btn-primary" type="submit">
+                        <i class="bi bi-search"></i> Rechercher
+                    </button>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+
+    {% if form.vars.submitted %}
+        {% set total = results.creators|length + results.products|length + results.events|length + results.posts|length %}
+        
+        <div class="row">
+            <div class="col-12">
+                <h2 class="h4 mb-4">{{ total }} résultat{% if total > 1 %}s{% endif %} trouvé{% if total > 1 %}s{% endif %}</h2>
+            </div>
+        </div>
+
+        {% if results.creators|length > 0 %}
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h3 class="h5 mb-3">Créateurs ({{ results.creators|length }})</h3>
+                    <div class="list-group">
+                        {% for creator in results.creators %}
+                            <a href="{{ path('creator_show', {'id': creator.id}) }}" class="list-group-item list-group-item-action">
+                                <div class="d-flex align-items-center">
+                                    {% if creator.profilePicture %}
+                                        <img src="{{ asset('uploads/profile/' ~ creator.profilePicture) }}" alt="{{ creator.username }}" class="rounded-circle me-3" style="width: 48px; height: 48px; object-fit: cover;">
+                                    {% else %}
+                                        <div class="rounded-circle bg-secondary me-3 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+                                            <i class="bi bi-person text-white"></i>
+                                        </div>
+                                    {% endif %}
+                                    <div>
+                                        <h4 class="h6 mb-0">{{ creator.creatorInfo.displayName ?? creator.username }}</h4>
+                                        {% if creator.creatorInfo.description %}
+                                            <small class="text-muted">{{ creator.creatorInfo.description|u.truncate(100, '...') }}</small>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if results.products|length > 0 %}
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h3 class="h5 mb-3">Produits ({{ results.products|length }})</h3>
+                    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                        {% for product in results.products %}
+                            <div class="col">
+                                <div class="card h-100">
+                                    {% if product.mainImage %}
+                                        <img src="{{ asset('uploads/images/' ~ product.mainImage.filename) }}" class="card-img-top" alt="{{ product.name }}" style="height: 200px; object-fit: cover;">
+                                    {% endif %}
+                                    <div class="card-body">
+                                        <h4 class="card-title h6">{{ product.name }}</h4>
+                                        <p class="card-text small">{{ product.shortDescription|u.truncate(100, '...') }}</p>
+                                        <a href="{{ path('product_show', {'id': product.id}) }}" class="btn btn-sm btn-outline-primary">Voir le produit</a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if results.events|length > 0 %}
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h3 class="h5 mb-3">Événements ({{ results.events|length }})</h3>
+                    <div class="list-group">
+                        {% for event in results.events %}
+                            <a href="{{ path('app_event_show', {'id': event.id}) }}" class="list-group-item list-group-item-action">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h4 class="h6 mb-1">{{ event.title }}</h4>
+                                        <p class="mb-1 small">{{ event.shortDescription|u.truncate(100, '...') }}</p>
+                                        <small class="text-muted">
+                                            <i class="bi bi-calendar"></i> {{ event.startDateTime|date('d/m/Y H:i') }}
+                                            {% if event.location %}
+                                                <i class="bi bi-geo-alt ms-2"></i> {{ event.location }}
+                                            {% endif %}
+                                        </small>
+                                    </div>
+                                    {% if event.status == constant('App\\Enum\\EventStatus::Cancelled') %}
+                                        <span class="badge bg-danger">Annulé</span>
+                                    {% endif %}
+                                </div>
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if results.posts|length > 0 %}
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h3 class="h5 mb-3">Articles ({{ results.posts|length }})</h3>
+                    <div class="list-group">
+                        {% for post in results.posts %}
+                            <a href="{{ path('post_show', {'id': post.id}) }}" class="list-group-item list-group-item-action">
+                                <div class="d-flex justify-content-between align-items-start">
+                                    <div>
+                                        <h4 class="h6 mb-1">{{ post.title }}</h4>
+                                        <p class="mb-1 small">{{ post.content|striptags|u.truncate(150, '...') }}</p>
+                                        <small class="text-muted">
+                                            Par {{ post.author.username }} le {{ post.createdAt|date('d/m/Y') }}
+                                        </small>
+                                    </div>
+                                    {% if post.mainImage %}
+                                        <img src="{{ asset('uploads/images/' ~ post.mainImage.filename) }}" alt="" class="ms-3" style="width: 100px; height: 100px; object-fit: cover;">
+                                    {% endif %}
+                                </div>
+                            </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if total == 0 %}
+            <div class="row">
+                <div class="col-12">
+                    <div class="alert alert-info">
+                        Aucun résultat trouvé pour votre recherche.
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    {% endif %}
+</div>
+{% endblock %} 
