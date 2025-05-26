@@ -5,7 +5,7 @@
 {% block body %}
 <div class="container mx-auto px-4 py-8">
     <div class="mb-4">
-        <a href="{{ path('products') }}" class="text-primary hover:underline flex items-center">
+        <a href="{{ path('app_product_index') }}" class="text-primary hover:underline flex items-center">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
             </svg>
@@ -50,7 +50,7 @@
                 
                 <div class="mb-4">
                     <p class="text-gray-600">
-                        Par <a href="{{ path('creator_show', {id: product.creator.id}) }}" class="text-primary hover:underline">{{ product.creator.creatorInfo.displayName }}</a>
+                        Par <a href="{{ path('app_creator_show', {id: product.creator.id}) }}" class="text-primary hover:underline">{{ product.creator.creatorInfo.displayName }}</a>
                     </p>
                 </div>
                 
@@ -101,15 +101,24 @@
                     </div>
                 </div>
                 
-                <div class="flex gap-4">
-                    <a href="#" class="flex-1 bg-primary text-white text-center py-3 rounded-md hover:bg-opacity-90 transition-colors">
-                        Ajouter au panier
-                    </a>
-                    <button class="bg-gray-100 p-3 rounded-md hover:bg-gray-200 transition-colors">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-                        </svg>
-                    </button>
+                <div class="mt-6">
+                    <form method="post" action="{{ path('app_cart_add', {'id': product.id}) }}" class="flex items-center space-x-4">
+                        <input type="hidden" name="_token" value="{{ csrf_token('add_cart_' ~ product.id) }}">
+                        <div class="flex items-center">
+                            <label for="quantity" class="sr-only">Quantité</label>
+                            <select name="quantity" id="quantity" class="rounded-md border-gray-300 text-sm">
+                                {% for i in 1..10 %}
+                                    <option value="{{ i }}">{{ i }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <button type="submit" class="flex-1 inline-flex items-center justify-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-primary hover:bg-primary/90">
+                            <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                            </svg>
+                            Ajouter au panier
+                        </button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -162,7 +171,7 @@
                                 {% endif %}
                             </p>
                             
-                            <a href="{{ path('product_show', {id: otherProduct.id}) }}" class="block w-full text-center bg-primary text-white py-2 rounded hover:bg-opacity-90 transition-colors">
+                            <a href="{{ path('app_product_show', {id: otherProduct.id}) }}" class="block w-full text-center bg-primary text-white py-2 rounded hover:bg-opacity-90 transition-colors">
                                 Voir le produit
                             </a>
                         </div>
@@ -177,7 +186,7 @@
         
         {% if otherProducts > 0 %}
             <div class="text-center mt-8">
-                <a href="{{ path('creator_show', {id: product.creator.id}) }}" class="inline-block text-primary hover:underline">
+                <a href="{{ path('app_creator_show', {id: product.creator.id}) }}" class="inline-block text-primary hover:underline">
                     Voir tous les produits de {{ product.creator.creatorInfo.displayName }}
                 </a>
             </div>

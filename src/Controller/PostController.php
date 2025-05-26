@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Route('/posts')]
 class PostController extends AbstractController
 {
-    #[Route('/', name: 'post_index', methods: ['GET'])]
+    #[Route('/', name: 'app_post_index', methods: ['GET'])]
     public function index(PostRepository $postRepository): Response
     {
         return $this->render('post/index.html.twig', [
@@ -32,7 +32,7 @@ class PostController extends AbstractController
         ]);
     }
 
-    #[Route('/new', name: 'post_new', methods: ['GET', 'POST'])]
+    #[Route('/new', name: 'app_post_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
         // Vérifier que l'utilisateur est connecté
@@ -55,7 +55,7 @@ class PostController extends AbstractController
             
             $this->addFlash('success', 'Votre post a été créé avec succès.');
             
-            return $this->redirectToRoute('post_show', ['id' => $post->getId()]);
+            return $this->redirectToRoute('app_post_show', ['id' => $post->getId()]);
         }
         
         return $this->render('post/new.html.twig', [
@@ -63,7 +63,7 @@ class PostController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'post_show', methods: ['GET'])]
+    #[Route('/{id}', name: 'app_post_show', methods: ['GET'])]
     public function show(Post $post): Response
     {
         // Vérifie que le post est publié ou que l'utilisateur est l'auteur
@@ -77,7 +77,7 @@ class PostController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}/delete', name: 'post_delete', methods: ['POST'])]
+    #[Route('/{id}/delete', name: 'app_post_delete', methods: ['POST'])]
     public function delete(Request $request, Post $post, EntityManagerInterface $entityManager): Response
     {
         // Vérification que l'utilisateur est l'auteur ou un administrateur
@@ -97,10 +97,10 @@ class PostController extends AbstractController
             $this->addFlash('success', 'Le post a été supprimé avec succès.');
         }
           // Redirection vers la page de profil de l'auteur
-        return $this->redirectToRoute('profile_show', ['username' => $post->getAuthor()->getUserIdentifier()]);
+        return $this->redirectToRoute('app_profile_show', ['username' => $post->getAuthor()->getUserIdentifier()]);
     }
 
-    #[Route('/{id}/edit', name: 'post_edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}/edit', name: 'app_post_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Post $post, EntityManagerInterface $entityManager): Response
     {
         // Vérifier que l'utilisateur est l'auteur du post
@@ -119,7 +119,7 @@ class PostController extends AbstractController
             
             $this->addFlash('success', 'Votre post a été modifié avec succès.');
             
-            return $this->redirectToRoute('post_show', ['id' => $post->getId()]);
+            return $this->redirectToRoute('app_post_show', ['id' => $post->getId()]);
         }
         
         return $this->render('post/edit.html.twig', [

@@ -12,11 +12,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 #[Route('/profile')]
 class ProfileController extends AbstractController
 {
-    #[Route('/edit', name: 'profile_edit', methods: ['GET', 'POST'])]
+    #[Route('/edit', name: 'app_profile_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         /** @var User $user */
@@ -77,7 +78,7 @@ class ProfileController extends AbstractController
 
             $this->addFlash('success', 'Votre profil a été mis à jour avec succès');
             // Utiliser getUserIdentifier qui est garanti par l'interface UserInterface
-            return $this->redirectToRoute('profile_show', ['username' => $user->getUserIdentifier()]);
+            return $this->redirectToRoute('app_profile_show', ['username' => $user->getUserIdentifier()]);
         }
 
         return $this->render('profile/edit.html.twig', [
@@ -85,7 +86,7 @@ class ProfileController extends AbstractController
         ]);
     }
     
-    #[Route('/{username}', name: 'profile_show', methods: ['GET'])]
+    #[Route('/{username}', name: 'app_profile_show', methods: ['GET'])]
     public function show(string $username, PostRepository $postRepository, EntityManagerInterface $entityManager): Response
     {
         // Récupérer l'utilisateur par son nom d'utilisateur
@@ -97,7 +98,7 @@ class ProfileController extends AbstractController
 
         // Si l'utilisateur est un créateur, rediriger vers son profil créateur
         if ($user->isCreator()) {
-            return $this->redirectToRoute('creator_show', ['id' => $user->getId()]);
+            return $this->redirectToRoute('app_creator_show', ['id' => $user->getId()]);
         }
         
         // Récupérer les posts publiés de l'utilisateur

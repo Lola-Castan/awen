@@ -14,9 +14,10 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
-final class ProductController extends AbstractController
+#[Route('/products')]
+class ProductController extends AbstractController
 {
-    #[Route('/products', name: 'products')]
+    #[Route('/', name: 'app_product_index')]
     public function index(Request $request, ProductRepository $productRepository, CategoryRepository $categoryRepository): Response
     {
         $categoryId = $request->query->get('category');
@@ -78,7 +79,7 @@ final class ProductController extends AbstractController
         ]);
     }
     
-    #[Route('/product/{id}', name: 'product_show')]
+    #[Route('/{id}', name: 'app_product_show')]
     public function show(Product $product): Response
     {
         // Vérifie si le produit est publié, sinon renvoie une 404
@@ -91,7 +92,7 @@ final class ProductController extends AbstractController
         ]);
     }
 
-    #[Route('/product/create', name: 'product_create')]
+    #[Route('/create', name: 'app_product_create')]
     public function create(Request $request, EntityManagerInterface $entityManager): Response
     {
         $product = new Product();

@@ -9,7 +9,7 @@
 {% if categories|length > 0 %}
     <div class="flex flex-wrap gap-2">
         {% for category in categories %}
-            {% set route_name = type == 'event' ? 'events_by_category' : (type == 'product' ? 'products_by_category' : 'creators_by_category') %}
+            {% set route_name = type == 'event' ? 'app_events_by_category' : (type == 'product' ? 'app_products_by_category' : 'app_creators_by_category') %}
             <a href="{{ path(route_name, {'id': category.id}) }}" 
                class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium {% if currentCategory is defined and currentCategory.id == category.id %}bg-primary text-white{% else %}bg-gray-100 text-gray-700 hover:bg-gray-200{% endif %} transition-colors">
                 {{ category.name }}

@@ -15,9 +15,10 @@ use App\Form\CreatorInfoType;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
+#[Route('/creators')]
 class CreatorController extends AbstractController
 {
-    #[Route('/creators', name: 'creators')]
+    #[Route('/', name: 'app_creator_index')]
     public function index(Request $request, UserRepository $userRepository, CategoryRepository $categoryRepository): Response
     {
         $categoryId = $request->query->get('category');
@@ -47,7 +48,7 @@ class CreatorController extends AbstractController
         ]);
     }
 
-    #[Route('/creator/{id}', name: 'creator_show')]
+    #[Route('/{id}', name: 'app_creator_show')]
     public function show(Request $request, User $user): Response
     {
         // Vérifier si l'utilisateur est bien un créateur
@@ -61,7 +62,7 @@ class CreatorController extends AbstractController
         ]);
     }
 
-    #[Route('/creator/{id}/edit', name: 'creator_edit')]
+    #[Route('/{id}/edit', name: 'app_creator_edit')]
     public function edit(Request $request, User $creator, EntityManagerInterface $entityManager): Response
     {
         // Vérifier que l'utilisateur est bien le propriétaire du profil
@@ -125,7 +126,7 @@ class CreatorController extends AbstractController
             $entityManager->flush();
             $this->addFlash('success', 'Votre profil créateur a été mis à jour avec succès !');
             
-            return $this->redirectToRoute('creator_show', ['id' => $creator->getId()]);
+            return $this->redirectToRoute('app_creator_show', ['id' => $creator->getId()]);
         }
 
         return $this->render('creator/edit.html.twig', [

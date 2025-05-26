@@ -13,7 +13,7 @@
         current_category: current_category,
         sort_options: sort_options,
         current_sort: current_sort,
-        current_path: 'creators'
+        current_path: 'app_creator_index'
     }) }}
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -43,7 +43,7 @@
                         <div class="text-sm text-gray-500">
                             {{ creator.products|length }} produits
                         </div>
-                        <a href="{{ path('creator_show', {'id': creator.id}) }}" 
+                        <a href="{{ path('app_creator_show', {'id': creator.id}) }}" 
                            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-primary/90">
                             Voir le profil
                         </a>

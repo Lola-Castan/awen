@@ -9,14 +9,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AccountController extends AbstractController
 {
-    #[Route('/account', name: 'account_settings')]
+    #[Route('/account', name: 'app_account_settings')]
     public function settings(
         Request $request, 
         EntityManagerInterface $entityManager,
-        \Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface $passwordHasher
+        UserPasswordHasherInterface $userPasswordHasher
     ): Response {
         /** @var User $user */
         $user = $this->getUser();
@@ -42,7 +43,7 @@ class AccountController extends AbstractController
 
             // Gestion du changement de mot de passe
             if ($plainPassword = $form->get('plainPassword')->getData()) {
-                $hashedPassword = $passwordHasher->hashPassword(
+                $hashedPassword = $userPasswordHasher->hashPassword(
                     $user,
                     $plainPassword
                 );
@@ -78,7 +79,7 @@ class AccountController extends AbstractController
             }
 
             $entityManager->flush();
-            return $this->redirectToRoute('account_settings');
+            return $this->redirectToRoute('app_account_settings');
         }
 
         return $this->render('account/settings.html.twig', [

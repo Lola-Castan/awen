@@ -27,12 +27,12 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     public function upgradePassword(PasswordAuthenticatedUserInterface $user, string $newHashedPassword): void
     {
         if (!$user instanceof User) {
-            throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', $user::class));
+            throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', \get_class($user)));
         }
 
         $user->setPassword($newHashedPassword);
-        $this->getEntityManager()->persist($user);
-        $this->getEntityManager()->flush();
+
+        $this->save($user, true);
     }
 
     /**
@@ -71,6 +71,20 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         }
 
         return $qb->getQuery()->getResult();
+    }
+
+    /**
+     * @return User[] Returns an array of User objects with the specified role and category
+     */
+    public function findByRoleAndCategory(string $role, Category $category): array
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.roles LIKE :role')
+            ->andWhere(':category MEMBER OF u.categories')
+            ->setParameter('role', '%' . $role . '%')
+            ->setParameter('category', $category)
+            ->getQuery()
+            ->getResult();
     }
 
     //    /**

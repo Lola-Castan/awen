@@ -7,7 +7,7 @@
     <div class="flex justify-between items-center mb-8">
         <h1 class="text-3xl font-bold text-gray-900">Produits</h1>
         {% if is_granted('ROLE_CREATOR') %}
-            <a href="{{ path('product_new') }}" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+            <a href="{{ path('app_product_new') }}" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
                 <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
                 </svg>
@@ -21,7 +21,7 @@
         current_category: current_category,
         sort_options: sort_options,
         current_sort: current_sort,
-        current_path: 'products'
+        current_path: 'app_product_index'
     }) }}
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -47,7 +47,7 @@
                     
                     <div class="mt-4 flex justify-between items-center">
                         <span class="text-2xl font-bold text-primary">{{ product.price|format_currency('EUR') }}</span>
-                        <a href="{{ path('product_show', {'id': product.id}) }}" 
+                        <a href="{{ path('app_product_show', {'id': product.id}) }}" 
                            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-primary hover:bg-primary/90">
                             Voir le produit
                         </a>

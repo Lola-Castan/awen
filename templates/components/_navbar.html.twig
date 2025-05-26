@@ -1,0 +1,119 @@
+{# Navigation principale #}
+<nav class="bg-white shadow">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="flex items-center justify-between h-16">
+            {# Logo #}
+            <div class="flex-shrink-0">
+                <a href="{{ path('app_home') }}" class="text-2xl font-bold text-primary">
+                    Awen
+                </a>
+            </div>
+
+            {# Navigation desktop #}
+            <div class="hidden md:flex md:items-center md:space-x-8">
+                <a href="{{ path('app_product_index') }}" class="text-gray-500 hover:text-gray-900">Produits</a>
+                <a href="{{ path('app_creator_index') }}" class="text-gray-500 hover:text-gray-900">Créateurs</a>
+                <a href="{{ path('app_event_index') }}" class="text-gray-500 hover:text-gray-900">Événements</a>
+            </div>
+
+            {# Actions de droite #}
+            <div class="flex items-center space-x-6">
+                {# Barre de recherche #}
+                <div class="hidden md:block w-64">
+                    <form action="{{ path('app_search') }}" method="get" class="w-full">
+                        <div class="relative">
+                            <input type="text" 
+                                   name="query" 
+                                   class="w-full rounded-lg border-gray-300 pl-10 pr-4 py-2 focus:border-primary focus:ring-primary" 
+                                   placeholder="Rechercher...">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                </svg>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                {# Panier #}
+                <a href="{{ path('app_cart_index') }}" class="text-gray-500 hover:text-gray-900">
+                    <div class="relative">
+                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                        {% if app.session.get('cart')|length > 0 %}
+                            <span class="absolute -top-2 -right-2 bg-primary text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+                                {{ app.session.get('cart')|length }}
+                            </span>
+                        {% endif %}
+                    </div>
+                </a>
+
+                {# Menu utilisateur #}
+                {% if app.user %}
+                    <div class="relative">
+                        <button type="button" class="flex text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                            <span class="sr-only">Menu utilisateur</span>
+                            <img class="h-8 w-8 rounded-full" 
+                                 src="{{ asset('images/default-avatar.png') }}" 
+                                 alt="{{ app.user.email }}">
+                        </button>
+                    </div>
+                {% else %}
+                    <div class="flex items-center space-x-4">
+                        <a href="{{ path('app_login') }}" class="text-gray-500 hover:text-gray-900">Connexion</a>
+                        <a href="{{ path('app_register') }}" class="bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90">Inscription</a>
+                    </div>
+                {% endif %}
+
+                {# Bouton menu mobile #}
+                <button type="button" 
+                        class="md:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary"
+                        aria-controls="mobile-menu"
+                        aria-expanded="false">
+                    <span class="sr-only">Ouvrir le menu</span>
+                    <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    {# Menu mobile #}
+    <div class="md:hidden" id="mobile-menu">
+        <div class="px-2 pt-2 pb-3 space-y-1">
+            {# Barre de recherche mobile #}
+            <div class="px-3 py-2">
+                <form action="{{ path('app_search') }}" method="get">
+                    <div class="relative">
+                        <input type="text" 
+                               name="query" 
+                               class="w-full rounded-lg border-gray-300 pl-10 pr-4 py-2 focus:border-primary focus:ring-primary" 
+                               placeholder="Rechercher...">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <a href="{{ path('app_product_index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">Produits</a>
+            <a href="{{ path('app_creator_index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">Créateurs</a>
+            <a href="{{ path('app_event_index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">Événements</a>
+            <a href="{{ path('app_cart_index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
+                Panier
+                {% if app.session.get('cart')|length > 0 %}
+                    <span class="ml-2 bg-primary text-white text-xs rounded-full px-2 py-1">
+                        {{ app.session.get('cart')|length }}
+                    </span>
+                {% endif %}
+            </a>
+            {% if not app.user %}
+                <a href="{{ path('app_login') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">Connexion</a>
+                <a href="{{ path('app_register') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">Inscription</a>
+            {% endif %}
+        </div>
+    </div>
+</nav> 

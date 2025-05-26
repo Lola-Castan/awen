@@ -49,7 +49,7 @@
                 </h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {% for creator in results.creators %}
-                        <a href="{{ path('creator_show', {'id': creator.id}) }}" class="block group">
+                        <a href="{{ path('app_creator_show', {'id': creator.id}) }}" class="block group">
                             <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow p-4 flex items-center space-x-4">
                                 {% if creator.profilePicture %}
                                     <img src="{{ asset('uploads/profile/' ~ creator.profilePicture) }}" alt="{{ creator.username }}" class="w-16 h-16 rounded-full object-cover">

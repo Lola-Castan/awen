@@ -64,74 +64,7 @@
     </head>
     <body class="bg-gray-50 flex flex-col min-h-screen">
         <!-- Navbar -->
-        <nav class="bg-primary">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex items-center justify-between h-16">
-                    <!-- Logo et liens principaux -->
-                    <div class="flex items-center">
-                        <a href="{{ path('app_home') }}" class="text-white font-bold text-xl">Awen</a>
-                        <div class="hidden md:block ml-10">
-                            <div class="flex items-baseline space-x-4">
-                                <a href="{{ path('creators') }}" class="text-white hover:bg-primary-700 px-3 py-2 rounded-md text-sm font-medium">Créateurs</a>
-                                <a href="{{ path('products') }}" class="text-white hover:bg-primary-700 px-3 py-2 rounded-md text-sm font-medium">Produits</a>
-                                <a href="{{ path('app_event_index') }}" class="text-white hover:bg-primary-700 px-3 py-2 rounded-md text-sm font-medium">Événements</a>
-                                <a href="{{ path('post_index') }}" class="text-white hover:bg-primary-700 px-3 py-2 rounded-md text-sm font-medium">Posts</a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Barre de recherche et menu utilisateur -->
-                    <div class="flex items-center">
-                        <div class="mr-4">
-                            {{ render(controller('App\\Controller\\SearchController::searchBar')) }}
-                        </div>
-
-                        <!-- Menu utilisateur -->
-                        <div class="ml-4 flex items-center md:ml-6">
-                            {% if app.user %}
-                                <div class="relative ml-3">
-                                    <button id="user-menu-button" class="flex items-center text-white hover:text-gray-200">
-                                        <span class="mr-2">{{ app.user.username }}</span>
-                                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                                        </svg>
-                                    </button>
-                                    <div id="user-dropdown" class="hidden absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 z-50">
-                                        {% if is_granted('ROLE_CREATOR') %}
-                                            <a href="{{ path('creator_show', {'id': app.user.id}) }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Mon profil créateur</a>
-                                            <div class="border-t border-gray-100"></div>
-                                        {% endif %}
-                                        <a href="{{ path('app_logout') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Déconnexion</a>
-                                    </div>
-                                </div>
-                            {% else %}
-                                <a href="{{ path('app_login') }}" class="text-white hover:text-gray-200 px-3 py-2 text-sm font-medium">Connexion</a>
-                                <a href="{{ path('app_register') }}" class="text-white hover:text-gray-200 px-3 py-2 text-sm font-medium">Inscription</a>
-                            {% endif %}
-                        </div>
-
-                        <!-- Bouton menu mobile -->
-                        <div class="flex md:hidden">
-                            <button id="mobile-menu-button" class="text-white hover:text-gray-200">
-                                <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Menu mobile -->
-                <div id="mobile-menu" class="hidden md:hidden">
-                    <div class="px-2 pt-2 pb-3 space-y-1">
-                        <a href="{{ path('creators') }}" class="text-white hover:bg-primary-700 block px-3 py-2 rounded-md text-base font-medium">Créateurs</a>
-                        <a href="{{ path('products') }}" class="text-white hover:bg-primary-700 block px-3 py-2 rounded-md text-base font-medium">Produits</a>
-                        <a href="{{ path('app_event_index') }}" class="text-white hover:bg-primary-700 block px-3 py-2 rounded-md text-base font-medium">Événements</a>
-                        <a href="{{ path('post_index') }}" class="text-white hover:bg-primary-700 block px-3 py-2 rounded-md text-base font-medium">Posts</a>
-                    </div>
-                </div>
-            </div>
-        </nav>
+        {{ include('components/_navbar.html.twig') }}
 
         <!-- Messages flash -->
         {% for label, messages in app.flashes %}
@@ -159,10 +92,10 @@
                         <h3 class="text-lg font-semibold text-gray-800 mb-4">Navigation</h3>
                         <ul class="space-y-2">
                             <li><a href="{{ path('app_home') }}" class="text-gray-600 hover:text-primary">Accueil</a></li>
-                            <li><a href="{{ path('creators') }}" class="text-gray-600 hover:text-primary">Créateurs</a></li>
-                            <li><a href="{{ path('products') }}" class="text-gray-600 hover:text-primary">Produits</a></li>
+                            <li><a href="{{ path('app_creator_index') }}" class="text-gray-600 hover:text-primary">Créateurs</a></li>
+                            <li><a href="{{ path('app_product_index') }}" class="text-gray-600 hover:text-primary">Produits</a></li>
                             <li><a href="{{ path('app_event_index') }}" class="text-gray-600 hover:text-primary">Événements</a></li>
-                            <li><a href="{{ path('post_index') }}" class="text-gray-600 hover:text-primary">Posts</a></li>
+                            <li><a href="{{ path('app_post_index') }}" class="text-gray-600 hover:text-primary">Posts</a></li>
                         </ul>
                     </div>
                     <div>
