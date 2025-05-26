@@ -3,11 +3,13 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Entity\Category;
 use App\Repository\UserRepository;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
+use App\Repository\CategoryRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Routing\Attribute\Route;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Form\CreatorInfoType;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
@@ -16,13 +18,32 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 class CreatorController extends AbstractController
 {
     #[Route('/creators', name: 'creators')]
-    public function index(UserRepository $userRepository): Response
+    public function index(Request $request, UserRepository $userRepository, CategoryRepository $categoryRepository): Response
     {
-        // Récupérer tous les utilisateurs qui sont des créateurs actifs
-        $creators = $userRepository->findCreators();
-        
+        $categoryId = $request->query->get('category');
+        $sort = $request->query->get('sort', 'newest');
+
+        $category = null;
+        if ($categoryId) {
+            $category = $categoryRepository->find($categoryId);
+        }
+
+        $creators = $userRepository->findCreators($category, $sort);
+        $categories = $categoryRepository->findAll();
+
+        $sortOptions = [
+            'newest' => 'Plus récents',
+            'name_asc' => 'Nom A-Z',
+            'name_desc' => 'Nom Z-A',
+            'products_count' => 'Nombre de produits'
+        ];
+
         return $this->render('creator/index.html.twig', [
             'creators' => $creators,
+            'categories' => $categories,
+            'current_category' => $category,
+            'current_sort' => $sort,
+            'sort_options' => $sortOptions,
         ]);
     }
 

@@ -3,9 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Product;
+use App\Entity\Category;
 use App\Form\ProductType;
 use App\Enum\ProductStatus;
 use App\Repository\ProductRepository;
+use App\Repository\CategoryRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,12 +17,64 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 final class ProductController extends AbstractController
 {
     #[Route('/products', name: 'products')]
-    public function index(ProductRepository $productRepository): Response
+    public function index(Request $request, ProductRepository $productRepository, CategoryRepository $categoryRepository): Response
     {
-        $products = $productRepository->findPublishedProducts();
-        
+        $categoryId = $request->query->get('category');
+        $sort = $request->query->get('sort', 'newest'); // Par défaut, tri par date de création
+
+        $category = null;
+        if ($categoryId) {
+            $category = $categoryRepository->find($categoryId);
+        }
+
+        $queryBuilder = $productRepository->createQueryBuilder('p')
+            ->where('p.status = :status')
+            ->setParameter('status', 'published');
+
+        if ($category) {
+            $queryBuilder
+                ->innerJoin('p.categories', 'c')
+                ->andWhere('c.id = :categoryId')
+                ->setParameter('categoryId', $category->getId());
+        }
+
+        // Appliquer le tri
+        switch ($sort) {
+            case 'price_asc':
+                $queryBuilder->orderBy('p.price', 'ASC');
+                break;
+            case 'price_desc':
+                $queryBuilder->orderBy('p.price', 'DESC');
+                break;
+            case 'name_asc':
+                $queryBuilder->orderBy('p.name', 'ASC');
+                break;
+            case 'name_desc':
+                $queryBuilder->orderBy('p.name', 'DESC');
+                break;
+            case 'newest':
+            default:
+                $queryBuilder->orderBy('p.createdAt', 'DESC');
+                break;
+        }
+
+        $products = $queryBuilder->getQuery()->getResult();
+        $categories = $categoryRepository->findAll();
+
+        $sortOptions = [
+            'newest' => 'Plus récents',
+            'price_asc' => 'Prix croissant',
+            'price_desc' => 'Prix décroissant',
+            'name_asc' => 'Nom A-Z',
+            'name_desc' => 'Nom Z-A',
+        ];
+
         return $this->render('product/index.html.twig', [
             'products' => $products,
+            'categories' => $categories,
+            'current_category' => $category,
+            'current_sort' => $sort,
+            'sort_options' => $sortOptions,
         ]);
     }
     

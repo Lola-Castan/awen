@@ -1,0 +1,53 @@
+{# 
+    Template pour afficher les filtres et options de tri
+    Paramètres attendus :
+    - categories: Collection de catégories disponibles
+    - current_category: (optionnel) Catégorie actuellement sélectionnée
+    - sort_options: Tableau des options de tri disponibles
+    - current_sort: Option de tri actuellement sélectionnée
+    - current_path: Nom de la route courante
+#}
+
+<div class="bg-white rounded-lg shadow-sm p-4 mb-6">
+    <div class="md:flex md:justify-between md:items-start space-y-4 md:space-y-0">
+        <!-- Filtres par catégorie -->
+        <div class="space-y-2">
+            <h3 class="font-medium text-gray-700">Filtrer par catégorie</h3>
+            <div class="flex flex-wrap gap-2">
+                <a href="{{ path(current_path, {'sort': current_sort}) }}" 
+                   class="px-3 py-1 rounded-full text-sm {% if current_category is null %}bg-primary text-white{% else %}bg-gray-100 text-gray-700 hover:bg-gray-200{% endif %} transition-colors">
+                    Toutes
+                </a>
+                {% for category in categories %}
+                    <a href="{{ path(current_path, {'category': category.id, 'sort': current_sort}) }}" 
+                       class="px-3 py-1 rounded-full text-sm {% if current_category is not null and current_category.id == category.id %}bg-primary text-white{% else %}bg-gray-100 text-gray-700 hover:bg-gray-200{% endif %} transition-colors">
+                        {{ category.name }}
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Options de tri -->
+        <div class="space-y-2">
+            <h3 class="font-medium text-gray-700">Trier par</h3>
+            <div class="inline-block relative">
+                <select onchange="window.location.href=this.value" class="appearance-none bg-gray-100 text-gray-700 py-2 pl-3 pr-8 rounded-md hover:bg-gray-200 transition-colors cursor-pointer">
+                    {% for sort_key, sort_label in sort_options %}
+                        <option value="{{ path(current_path, {
+                            'sort': sort_key, 
+                            'category': current_category is not null ? current_category.id : null
+                        }) }}"
+                        {% if current_sort == sort_key %}selected{% endif %}>
+                            {{ sort_label }}
+                        </option>
+                    {% endfor %}
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
+                    <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                        <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+    </div>
+</div> 

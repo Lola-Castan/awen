@@ -3,11 +3,13 @@
 namespace App\Repository;
 
 use App\Entity\User;
+use App\Entity\Category;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
+use Doctrine\ORM\QueryBuilder;
 
 /**
  * @extends ServiceEntityRepository<User>
@@ -36,16 +38,34 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     /**
      * @return User[] Returns an array of active creators
      */
-    public function findCreators(): array
+    public function findCreators(?Category $category = null, ?string $sort = 'newest'): array
     {
         $qb = $this->createQueryBuilder('u')
-            ->join('u.roles', 'r')
-            ->where('r.name = :role')
-            ->setParameter('role', 'ROLE_CREATOR')
-            ->andWhere('u.creatorInfo.displayName IS NOT NULL')
-            ->andWhere('u.creatorInfo.displayName != :empty')
-            ->setParameter('empty', '')
-            ->orderBy('u.creatorInfo.displayName', 'ASC');
+            ->leftJoin('u.products', 'p')
+            ->groupBy('u.id');
+
+        if ($category) {
+            $qb->innerJoin('u.categories', 'cat')
+               ->andWhere('cat.id = :categoryId')
+               ->setParameter('categoryId', $category->getId());
+        }
+
+        // Appliquer le tri
+        switch ($sort) {
+            case 'name_asc':
+                $qb->orderBy('u.username', 'ASC');
+                break;
+            case 'name_desc':
+                $qb->orderBy('u.username', 'DESC');
+                break;
+            case 'products_count':
+                $qb->orderBy('COUNT(p.id)', 'DESC');
+                break;
+            case 'newest':
+            default:
+                $qb->orderBy('u.createdAt', 'DESC');
+                break;
+        }
 
         return $qb->getQuery()->getResult();
     }
