@@ -110,7 +110,7 @@ class CreatorRegistrationController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash('success', 'Félicitations ! Vous êtes maintenant créateur.');
-            return $this->redirectToRoute('creator_show', ['id' => $user->getId()]);
+            return $this->redirectToRoute('app_creator_show', ['id' => $user->getId()]);
         }
 
         return $this->render('creator/become_creator.html.twig', [

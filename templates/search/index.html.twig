@@ -103,7 +103,7 @@
                                     {% if product.categories|length > 0 %}
                                         <div class="mt-2 flex flex-wrap gap-2">
                                             {% for category in product.categories %}
-                                                <a href="{{ path('products_by_category', {'id': category.id}) }}" 
+                                                <a href="{{ path('app_products_by_category', {'id': category.id}) }}" 
                                                    class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors">
                                                     {{ category.name }}
                                                 </a>
@@ -162,7 +162,7 @@
                                 {% if event.eventCategories|length > 0 %}
                                     <div class="mt-2 flex flex-wrap gap-2">
                                         {% for category in event.eventCategories %}
-                                            <a href="{{ path('events_by_category', {'id': category.id}) }}" 
+                                            <a href="{{ path('app_events_by_category', {'id': category.id}) }}" 
                                                class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors">
                                                 {{ category.name }}
                                             </a>
@@ -187,7 +187,7 @@
                 </h3>
                 <div class="space-y-4">
                     {% for post in results.posts %}
-                        <a href="{{ path('post_show', {'id': post.id}) }}" class="block group">
+                        <a href="{{ path('app_post_show', {'id': post.id}) }}" class="block group">
                             <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow overflow-hidden">
                                 <div class="md:flex">
                                     {% if post.mainImage %}
@@ -214,7 +214,7 @@
                                         {% if post.author.categories|length > 0 %}
                                             <div class="mt-2 flex flex-wrap gap-2">
                                                 {% for category in post.author.categories %}
-                                                    <a href="{{ path('creators_by_category', {'id': category.id}) }}" 
+                                                    <a href="{{ path('app_creators_by_category', {'id': category.id}) }}" 
                                                        class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors">
                                                         {{ category.name }}
                                                     </a>

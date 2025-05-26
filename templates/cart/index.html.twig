@@ -53,7 +53,7 @@
                                     </p>
                                 </div>
                                 <p class="text-lg font-medium text-gray-900">
-                                    {{ (item.product.price * item.quantity)|number_format(2, ',', ' ') }} €
+                                    {{ ((item.product.price / 100) * item.quantity)|number_format(2, ',', ' ') }} €
                                 </p>
                             </div>
 
@@ -93,7 +93,7 @@
             <div class="border-t border-gray-200 px-6 py-4">
                 <div class="flex items-center justify-between">
                     <div class="text-lg font-medium text-gray-900">
-                        Total: {{ total|number_format(2, ',', ' ') }} €
+                        Total: {{ (total / 100)|number_format(2, ',', ' ') }} €
                     </div>
                     <div class="flex space-x-4">
                         <a href="{{ path('app_product_index') }}" 
