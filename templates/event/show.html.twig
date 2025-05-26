@@ -44,17 +44,12 @@
             </div>
             
             <!-- Catégories de l'événement -->
-            {% if event.eventCategories|length > 0 %}
-                <div class="mb-6">
-                    <div class="flex flex-wrap gap-2">
-                        {% for category in event.eventCategories %}
-                            <span class="inline-block bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
-                                {{ category.name }}
-                            </span>
-                        {% endfor %}
-                    </div>
-                </div>
-            {% endif %}
+            <div class="mb-6">
+                {{ include('components/_category_badges.html.twig', {
+                    categories: event.eventCategories,
+                    type: 'event'
+                }) }}
+            </div>
             
             <div class="flex flex-wrap items-center mb-6 text-gray-700">
                 <div class="flex items-center mr-6 mb-2">

@@ -4,9 +4,16 @@
 
 {% block body %}
 <div class="container mx-auto px-4 py-8">
-    <div class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-800 mb-2">Tous nos produits</h1>
-        <p class="text-gray-600">Découvrez les créations uniques de nos artisans</p>
+    <div class="flex justify-between items-center mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">Tous nos produits</h1>
+        {% if is_granted('ROLE_CREATOR') %}
+            <a href="{{ path('product_new') }}" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                </svg>
+                Ajouter un produit
+            </a>
+        {% endif %}
     </div>
     
     {% if products|length > 0 %}
@@ -28,14 +35,13 @@
                     </div>
                     
                     <div class="p-4">
-                        <h3 class="text-lg font-semibold text-gray-800 mb-2">{{ product.name }}</h3>
+                        <h2 class="text-lg font-semibold text-gray-800 mb-2">{{ product.name }}</h2>
                         
-                        <div class="flex flex-wrap gap-1 mb-3">
-                            {% for category in product.categories %}
-                                <span class="bg-gray-100 text-gray-600 px-2 py-1 rounded-full text-xs">
-                                    {{ category.name }}
-                                </span>
-                            {% endfor %}
+                        <div class="mb-3">
+                            {{ include('components/_category_badges.html.twig', {
+                                categories: product.categories,
+                                type: 'product'
+                            }) }}
                         </div>
                         
                         <div class="flex justify-between items-baseline mb-3">

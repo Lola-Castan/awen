@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créateurs de la catégorie {{ category.name }}{% endblock %}
+
+{% block body %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">
+            Créateurs de la catégorie "{{ category.name }}"
+        </h1>
+    </div>
+
+    {% if creators|length > 0 %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {% for creator in creators %}
+                <a href="{{ path('creator_show', {'id': creator.id}) }}" class="block group">
+                    <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow p-6">
+                        <div class="flex items-center space-x-4">
+                            {% if creator.profilePicture %}
+                                <img src="{{ asset('uploads/profile/' ~ creator.profilePicture) }}" 
+                                     alt="{{ creator.username }}" 
+                                     class="w-16 h-16 rounded-full object-cover">
+                            {% else %}
+                                <div class="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center">
+                                    <svg class="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                    </svg>
+                                </div>
+                            {% endif %}
+                            <div class="flex-1 min-w-0">
+                                <h2 class="text-lg font-medium text-gray-900 group-hover:text-primary truncate">
+                                    {{ creator.creatorInfo.displayName ?? creator.username }}
+                                </h2>
+                                {% if creator.creatorInfo.description %}
+                                    <p class="mt-1 text-sm text-gray-500 line-clamp-2">
+                                        {{ creator.creatorInfo.description }}
+                                    </p>
+                                {% endif %}
+                                {% if creator.categories|length > 0 %}
+                                    <div class="mt-2 flex flex-wrap gap-2">
+                                        {% for cat in creator.categories %}
+                                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium {% if cat.id == category.id %}bg-primary text-white{% else %}bg-gray-100 text-gray-700{% endif %}">
+                                                {{ cat.name }}
+                                            </span>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center py-12">
+            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+            <h3 class="mt-2 text-sm font-medium text-gray-900">Aucun créateur</h3>
+            <p class="mt-1 text-sm text-gray-500">Il n'y a pas encore de créateurs dans cette catégorie.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %} 

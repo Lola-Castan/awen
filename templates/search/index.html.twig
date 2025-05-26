@@ -100,6 +100,16 @@
                                 <div class="p-4">
                                     <h4 class="text-sm font-medium text-gray-900 group-hover:text-primary truncate">{{ product.name }}</h4>
                                     <p class="mt-1 text-sm text-gray-500 line-clamp-2">{{ product.shortDescription }}</p>
+                                    {% if product.categories|length > 0 %}
+                                        <div class="mt-2 flex flex-wrap gap-2">
+                                            {% for category in product.categories %}
+                                                <a href="{{ path('products_by_category', {'id': category.id}) }}" 
+                                                   class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors">
+                                                    {{ category.name }}
+                                                </a>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
                                 </div>
                             </div>
                         </a>
@@ -149,6 +159,16 @@
                                         </span>
                                     {% endif %}
                                 </div>
+                                {% if event.eventCategories|length > 0 %}
+                                    <div class="mt-2 flex flex-wrap gap-2">
+                                        {% for category in event.eventCategories %}
+                                            <a href="{{ path('events_by_category', {'id': category.id}) }}" 
+                                               class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors">
+                                                {{ category.name }}
+                                            </a>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
                             </div>
                         </a>
                     {% endfor %}
@@ -191,6 +211,16 @@
                                             </svg>
                                             {{ post.createdAt|date('d/m/Y') }}
                                         </div>
+                                        {% if post.author.categories|length > 0 %}
+                                            <div class="mt-2 flex flex-wrap gap-2">
+                                                {% for category in post.author.categories %}
+                                                    <a href="{{ path('creators_by_category', {'id': category.id}) }}" 
+                                                       class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors">
+                                                        {{ category.name }}
+                                                    </a>
+                                                {% endfor %}
+                                            </div>
+                                        {% endif %}
                                     </div>
                                 </div>
                             </div>

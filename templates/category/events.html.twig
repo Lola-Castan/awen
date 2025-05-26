@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Événements de la catégorie {{ category.name }}{% endblock %}
+
+{% block body %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">
+            Événements de la catégorie "{{ category.name }}"
+        </h1>
+        {% if category.description %}
+            <p class="mt-2 text-gray-600">{{ category.description }}</p>
+        {% endif %}
+    </div>
+
+    {% if events|length > 0 %}
+        <div class="space-y-4">
+            {% for event in events %}
+                <a href="{{ path('app_event_show', {'id': event.id}) }}" class="block group">
+                    <div class="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow p-4">
+                        <div class="flex justify-between items-start">
+                            <div class="flex-1 min-w-0">
+                                <h2 class="text-lg font-medium text-gray-900 group-hover:text-primary">{{ event.title }}</h2>
+                                <p class="mt-1 text-sm text-gray-500 line-clamp-2">{{ event.shortDescription }}</p>
+                                <div class="mt-2 flex items-center text-sm text-gray-500 space-x-4">
+                                    <span class="flex items-center">
+                                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                        </svg>
+                                        {{ event.startDateTime|date('d/m/Y H:i') }}
+                                    </span>
+                                    {% if event.location %}
+                                        <span class="flex items-center">
+                                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            </svg>
+                                            {{ event.location }}
+                                        </span>
+                                    {% endif %}
+                                </div>
+                                {% if event.eventCategories|length > 0 %}
+                                    <div class="mt-2 flex flex-wrap gap-2">
+                                        {% for cat in event.eventCategories %}
+                                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium {% if cat.id == category.id %}bg-primary text-white{% else %}bg-gray-100 text-gray-700{% endif %}">
+                                                {{ cat.name }}
+                                            </span>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+                            </div>
+                            {% if event.status == constant('App\\Enum\\EventStatus::Cancelled') %}
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                                    Annulé
+                                </span>
+                            {% endif %}
+                        </div>
+                    </div>
+                </a>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="text-center py-12">
+            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+            <h3 class="mt-2 text-sm font-medium text-gray-900">Aucun événement</h3>
+            <p class="mt-1 text-sm text-gray-500">Il n'y a pas encore d'événements dans cette catégorie.</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %} 

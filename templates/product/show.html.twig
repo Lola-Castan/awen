@@ -54,12 +54,11 @@
                     </p>
                 </div>
                 
-                <div class="flex flex-wrap gap-2 mb-4">
-                    {% for category in product.categories %}
-                        <span class="bg-primary bg-opacity-10 text-primary px-3 py-1 rounded-full text-sm">
-                            {{ category.name }}
-                        </span>
-                    {% endfor %}
+                <div class="mb-4">
+                    {{ include('components/_category_badges.html.twig', {
+                        categories: product.categories,
+                        type: 'product'
+                    }) }}
                 </div>
                 
                 <div class="mb-6">
