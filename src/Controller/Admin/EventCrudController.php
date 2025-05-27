@@ -16,7 +16,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[IsGranted('ROLE_CREATOR')]
+#[IsGranted('ROLE_ADMIN')]
 class EventCrudController extends AbstractCrudController
 {
     public static function getEntityFqcn(): string
