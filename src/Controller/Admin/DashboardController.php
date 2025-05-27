@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Event;
 use App\Entity\Product;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -24,11 +25,11 @@ class DashboardController extends AbstractDashboardController
 		return Dashboard::new()
 			->setTitle('Awen - Administration');
 	}
-
 	public function configureMenuItems(): iterable
 	{
 		yield MenuItem::linkToDashboard('Tableau de bord', 'fa fa-home');
 		yield MenuItem::linkToCrud('Produits', 'fa fa-shopping-bag', Product::class);
+		yield MenuItem::linkToCrud('Événements', 'fa fa-calendar', Event::class);
 		yield MenuItem::linkToRoute('Retour au site', 'fa fa-arrow-left', 'app_home');
 	}
 }

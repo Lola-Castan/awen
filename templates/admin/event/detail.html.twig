@@ -1,0 +1,61 @@
+{% extends '@EasyAdmin/crud/detail.html.twig' %}
+
+{# Ajoute une section pour afficher les organisateurs et participants d'un événement #}
+{% block detail_contents %}
+    {{ parent() }}
+    
+    {% if entity.instance.eventUsers|length > 0 %}
+        <div class="field-group">
+            <h3>Participants</h3>
+            
+            {% set organizers = [] %}
+            {% set participants = [] %}
+            {% set interested = [] %}
+            
+            {% for eventUser in entity.instance.eventUsers %}
+                {% if eventUser.isOrganizer %}
+                    {% set organizers = organizers|merge([eventUser.user.username]) %}
+                {% elseif eventUser.isParticipant %}
+                    {% set participants = participants|merge([eventUser.user.username]) %}
+                {% elseif eventUser.isInterested %}
+                    {% set interested = interested|merge([eventUser.user.username]) %}
+                {% endif %}
+            {% endfor %}
+            
+            <div class="field-group">
+                <div class="field">
+                    <div class="field-label">Organisateurs</div>
+                    <div class="field-value">
+                        {% if organizers|length > 0 %}
+                            {{ organizers|join(', ') }}
+                        {% else %}
+                            <em>Aucun organisateur</em>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="field">
+                    <div class="field-label">Participants</div>
+                    <div class="field-value">
+                        {% if participants|length > 0 %}
+                            {{ participants|join(', ') }}
+                        {% else %}
+                            <em>Aucun participant</em>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <div class="field">
+                    <div class="field-label">Personnes intéressées</div>
+                    <div class="field-value">
+                        {% if interested|length > 0 %}
+                            {{ interested|join(', ') }}
+                        {% else %}
+                            <em>Aucune personne intéressée</em>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

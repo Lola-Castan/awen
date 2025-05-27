@@ -77,14 +77,17 @@ class EventCategory
         }
 
         return $this;
-    }
-
-    public function removeEvent(Event $event): static
+    }    public function removeEvent(Event $event): static
     {
         if ($this->events->removeElement($event)) {
             $event->removeEventCategory($this);
         }
 
         return $this;
+    }
+    
+    public function __toString(): string
+    {
+        return $this->name ?? '';
     }
 }
