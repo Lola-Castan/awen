@@ -1,0 +1,69 @@
+{% extends '@EasyAdmin/crud/detail.html.twig' %}
+
+{% block detail_contents %}
+    {{ parent() }}
+    
+    {% if entity.instance.statusHistory is not empty %}
+        <div class="field-group">
+            <h3>Historique détaillé du statut</h3>
+            
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Ancien statut</th>
+                        <th>Nouveau statut</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for entry in entity.instance.statusHistory %}
+                        <tr>
+                            <td>{{ entry.timestamp|date('d/m/Y H:i:s') }}</td>
+                            <td>
+                                {% if entry.previous is not empty %}
+                                    {% set status = entry.previous %}
+                                    {% if status == 'organizer' %}
+                                        <span class="badge badge-success">Organisateur</span>
+                                    {% elseif status == 'participant' %}
+                                        <span class="badge badge-primary">Participant</span>
+                                    {% elseif status == 'interested' %}
+                                        <span class="badge badge-info">Intéressé</span>
+                                    {% elseif status == 'invited' %}
+                                        <span class="badge badge-warning">Invité</span>
+                                    {% elseif status == 'declined' %}
+                                        <span class="badge badge-danger">A décliné</span>
+                                    {% endif %}
+                                {% else %}
+                                    <em>Initial</em>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% set status = entry.new %}
+                                {% if status == 'organizer' %}
+                                    <span class="badge badge-success">Organisateur</span>
+                                {% elseif status == 'participant' %}
+                                    <span class="badge badge-primary">Participant</span>
+                                {% elseif status == 'interested' %}
+                                    <span class="badge badge-info">Intéressé</span>
+                                {% elseif status == 'invited' %}
+                                    <span class="badge badge-warning">Invité</span>
+                                {% elseif status == 'declined' %}
+                                    <span class="badge badge-danger">A décliné</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+    
+    {% if entity.instance.comment is not empty %}
+        <div class="field-group">
+            <h3>Commentaire de l'utilisateur</h3>
+            <div class="comment-block">
+                {{ entity.instance.comment|nl2br }}
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}

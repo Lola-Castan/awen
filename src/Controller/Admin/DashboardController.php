@@ -9,6 +9,7 @@ use App\Entity\Event;
 use App\Entity\Image;
 use App\Entity\Product;
 use App\Entity\Category;
+use App\Entity\EventUser;
 use App\Entity\EventCategory;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -38,11 +39,11 @@ class DashboardController extends AbstractDashboardController
 		yield MenuItem::section('Catalogue');
 		yield MenuItem::linkToCrud('Produits', 'fa fa-shopping-bag', Product::class);
 		yield MenuItem::linkToCrud('Catégories', 'fa fa-tags', Category::class);
-		
-		// Gestion des événements
+				// Gestion des événements
 		yield MenuItem::section('Événements');
 		yield MenuItem::linkToCrud('Événements', 'fa fa-calendar', Event::class);
 		yield MenuItem::linkToCrud('Catégories d\'événements', 'fa fa-list', EventCategory::class);
+		yield MenuItem::linkToCrud('Participants', 'fa fa-user-plus', EventUser::class);
 		
 		// Gestion du contenu
 		yield MenuItem::section('Contenu');
