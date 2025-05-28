@@ -7,9 +7,11 @@ use App\Entity\Role;
 use App\Entity\Post;
 use App\Entity\Event;
 use App\Entity\Image;
+use App\Entity\Order;
 use App\Entity\Product;
 use App\Entity\Category;
 use App\Entity\EventUser;
+use App\Entity\OrderDetail;
 use App\Entity\EventCategory;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Dashboard;
 use EasyCorp\Bundle\EasyAdminBundle\Config\MenuItem;
@@ -31,7 +33,9 @@ class DashboardController extends AbstractDashboardController
 	{
 		return Dashboard::new()
 			->setTitle('Awen - Administration');
-	}	public function configureMenuItems(): iterable
+	}
+
+	public function configureMenuItems(): iterable
 	{
 		yield MenuItem::linkToDashboard('Tableau de bord', 'fa fa-home');
 		
@@ -39,7 +43,13 @@ class DashboardController extends AbstractDashboardController
 		yield MenuItem::section('Catalogue');
 		yield MenuItem::linkToCrud('Produits', 'fa fa-shopping-bag', Product::class);
 		yield MenuItem::linkToCrud('Catégories', 'fa fa-tags', Category::class);
-				// Gestion des événements
+		
+		// Gestion des commandes
+		yield MenuItem::section('Commandes');
+		yield MenuItem::linkToCrud('Commandes', 'fa fa-shopping-cart', Order::class);
+		yield MenuItem::linkToCrud('Détails de commandes', 'fa fa-receipt', OrderDetail::class);
+		
+		// Gestion des événements
 		yield MenuItem::section('Événements');
 		yield MenuItem::linkToCrud('Événements', 'fa fa-calendar', Event::class);
 		yield MenuItem::linkToCrud('Catégories d\'événements', 'fa fa-list', EventCategory::class);

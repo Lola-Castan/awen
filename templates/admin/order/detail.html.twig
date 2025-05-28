@@ -1,0 +1,144 @@
+{% extends '@EasyAdmin/crud/detail.html.twig' %}
+
+{% block main %}
+    <div class="content-panel">
+        <div class="content-panel-body without-header without-footer">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="field-group">
+                        <div class="field-label h4">Informations générales</div>
+                        <div class="field-block">
+                            <div class="form-group">
+                                <label class="form-control-label">Numéro de commande</label>
+                                <div class="form-widget">
+                                    #{{ entity.id }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-control-label">Client</label>
+                                <div class="form-widget">
+                                    {{ entity.user.username }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-control-label">Date de création</label>
+                                <div class="form-widget">
+                                    {{ entity.createdAt|date('d/m/Y H:i') }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-control-label">Statut</label>
+                                <div class="form-widget">
+                                    {{ entity.status.getLabel() }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-control-label">Méthode de paiement</label>
+                                <div class="form-widget">
+                                    {{ entity.paymentMethod }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="field-group">
+                        <div class="field-label h4">Adresses</div>
+                        <div class="field-block">
+                            <div class="form-group">
+                                <label class="form-control-label">Adresse de livraison</label>
+                                <div class="form-widget">
+                                    {{ entity.shippingAddress|nl2br }}
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-control-label">Adresse de facturation</label>
+                                <div class="form-widget">
+                                    {{ entity.billingAddress|nl2br }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="field-group mt-4">
+                <div class="field-label h4">Détails de la commande</div>
+                <div class="field-block">
+                    <table class="table datagrid">
+                        <thead>
+                            <tr>
+                                <th>Produit</th>
+                                <th class="text-center">Quantité</th>
+                                <th class="text-right">Prix unitaire HT</th>
+                                <th class="text-right">Prix unitaire TTC</th>
+                                <th class="text-right">Total HT</th>
+                                <th class="text-right">Total TTC</th>
+                                <th class="text-right">Remise</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for detail in entity.orderDetails %}
+                                <tr>
+                                    <td>{{ detail.product.name }}</td>
+                                    <td class="text-center">{{ detail.quantity }}</td>
+                                    <td class="text-right">{{ detail.unitPriceHT|format_currency('EUR') }}</td>
+                                    <td class="text-right">{{ detail.unitPriceTTC|format_currency('EUR') }}</td>
+                                    <td class="text-right">{{ detail.totalPriceHT|format_currency('EUR') }}</td>
+                                    <td class="text-right">{{ detail.totalPriceTTC|format_currency('EUR') }}</td>
+                                    <td class="text-right">{{ detail.discountPercentage ? detail.discountPercentage ~ '%' : '-' }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="4" class="text-right"><strong>Total HT</strong></td>
+                                <td class="text-right">{{ entity.totalHT|format_currency('EUR') }}</td>
+                                <td colspan="2"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="4" class="text-right"><strong>TVA</strong></td>
+                                <td class="text-right">{{ entity.tvaAmount|format_currency('EUR') }}</td>
+                                <td colspan="2"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="4" class="text-right"><strong>Frais de port</strong></td>
+                                <td class="text-right">{{ entity.shippingCost|format_currency('EUR') }}</td>
+                                <td colspan="2"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="4" class="text-right"><strong>Total TTC</strong></td>
+                                <td class="text-right"><strong>{{ entity.totalTTC|format_currency('EUR') }}</strong></td>
+                                <td colspan="2"></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+
+            {% if entity.expectedDeliveryDate or entity.deliveredAt %}
+                <div class="field-group mt-4">
+                    <div class="field-label h4">Informations de livraison</div>
+                    <div class="field-block">
+                        {% if entity.expectedDeliveryDate %}
+                            <div class="form-group">
+                                <label class="form-control-label">Date de livraison prévue</label>
+                                <div class="form-widget">
+                                    {{ entity.expectedDeliveryDate|date('d/m/Y') }}
+                                </div>
+                            </div>
+                        {% endif %}
+                        {% if entity.deliveredAt %}
+                            <div class="form-group">
+                                <label class="form-control-label">Date de livraison effective</label>
+                                <div class="form-widget">
+                                    {{ entity.deliveredAt|date('d/m/Y H:i') }}
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %} 
