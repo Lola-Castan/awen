@@ -52,25 +52,25 @@
             {% if totalProducts > 0 %}
                 {# Onglets #}
                 <div class="border-b border-gray-200">
-                    <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+                    <nav class="grid grid-cols-2 gap-2 sm:flex sm:space-x-8 p-2 sm:p-0" aria-label="Tabs">
                         <button @click="activeTab = 'all'" 
                                 :class="{ 'border-primary text-primary': activeTab === 'all', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'all' }"
-                                class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
-                            Tous les produits
+                                class="text-center whitespace-nowrap py-2 sm:py-4 px-1 border-b-2 font-medium text-sm w-full sm:w-auto">
+                            Tous
                         </button>
                         <button @click="activeTab = 'published'" 
                                 :class="{ 'border-primary text-primary': activeTab === 'published', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'published' }"
-                                class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                                class="text-center whitespace-nowrap py-2 sm:py-4 px-1 border-b-2 font-medium text-sm w-full sm:w-auto">
                             Publiés
                         </button>
                         <button @click="activeTab = 'draft'" 
                                 :class="{ 'border-primary text-primary': activeTab === 'draft', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'draft' }"
-                                class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                                class="text-center whitespace-nowrap py-2 sm:py-4 px-1 border-b-2 font-medium text-sm w-full sm:w-auto">
                             Brouillons
                         </button>
                         <button @click="activeTab = 'archived'" 
                                 :class="{ 'border-primary text-primary': activeTab === 'archived', 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300': activeTab !== 'archived' }"
-                                class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+                                class="text-center whitespace-nowrap py-2 sm:py-4 px-1 border-b-2 font-medium text-sm w-full sm:w-auto">
                             Archivés
                         </button>
                     </nav>
@@ -78,114 +78,106 @@
 
                 {# Contenu des onglets #}
                 <div class="tab-content" x-show="activeTab === 'all'" x-cloak>
-                    <!-- Tableau de tous les produits -->
-                    <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
-                        <table class="min-w-full divide-y divide-gray-200">
-                            <thead class="bg-gray-50">
-                                <tr>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Produit
-                                    </th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Statut
-                                    </th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Prix
-                                    </th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Stock
-                                    </th>
-                                    <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        Date de création
-                                    </th>
-                                    <th scope="col" class="relative px-6 py-3">
-                                        <span class="sr-only">Actions</span>
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody class="bg-white divide-y divide-gray-200">
-                                {% set allProducts = [] %}
-                                {% for status, products in productsByStatus %}
-                                    {% for product in products %}
-                                        {% set allProducts = allProducts|merge([product]) %}
-                                    {% endfor %}
+                    <!-- Vue mobile -->
+                    <div class="block sm:hidden">
+                        <div class="space-y-4 mt-4">
+                            {% set allProducts = [] %}
+                            {% for status, products in productsByStatus %}
+                                {% for product in products %}
+                                    {% set allProducts = allProducts|merge([product]) %}
                                 {% endfor %}
-                                
-                                {% for product in allProducts %}
-                                    <tr>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="flex items-center">
-                                                <div class="flex-shrink-0 h-10 w-10">
-                                                    {% if product.images|length > 0 %}
-                                                        <img class="h-10 w-10 rounded-md object-cover" src="{{ product.mainImage.path }}" alt="{{ product.name }}">
-                                                    {% else %}
-                                                        <div class="h-10 w-10 rounded-md bg-gray-200 flex items-center justify-center">
-                                                            <svg class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                                            </svg>
-                                                        </div>
-                                                    {% endif %}
-                                                </div>
-                                                <div class="ml-4">
-                                                    <div class="text-sm font-medium text-gray-900">
-                                                        {{ product.name }}
-                                                    </div>
-                                                    <div class="text-sm text-gray-500">
-                                                        {{ product.shortDescription|length > 50 ? product.shortDescription|slice(0, 50) ~ '...' : product.shortDescription }}
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                                {% if product.status.value == 'published' %}bg-green-100 text-green-800
-                                                {% elseif product.status.value == 'draft' %}bg-yellow-100 text-yellow-800
-                                                {% else %}bg-gray-100 text-gray-800{% endif %}">
-                                                {% if product.status.value == 'published' %}Publié
-                                                {% elseif product.status.value == 'draft' %}Brouillon
-                                                {% else %}Archivé{% endif %}
-                                            </span>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="text-sm text-gray-900">{{ (product.price / 100)|number_format(2, ',', ' ') }} €</div>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap">
-                                            <div class="text-sm text-gray-900">{{ product.stock }}</div>
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                            {{ product.createdAt|date('d/m/Y') }}
-                                        </td>
-                                        <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                            <div class="flex space-x-2 justify-end">
-                                                {% if product.status.value == 'published' %}
-                                                    <a href="{{ path('app_product_show', {'id': product.id}) }}" class="text-indigo-600 hover:text-indigo-900">Voir</a>
-                                                {% endif %}
-                                                <a href="{{ path('app_creator_product_edit', {'id': product.id}) }}" class="text-gray-600 hover:text-gray-900">Modifier</a>
-                                                <a href="{{ path('app_creator_product_images', {'id': product.id}) }}" class="text-gray-600 hover:text-gray-900">Images</a>
-                                                {% if product.status.value == 'draft' %}
-                                                    <a href="{{ path('app_creator_product_status', {'id': product.id, 'status': 'publish'}) }}" class="text-green-600 hover:text-green-900">Publier</a>
-                                                {% elseif product.status.value == 'published' %}
-                                                    <a href="{{ path('app_creator_product_status', {'id': product.id, 'status': 'draft'}) }}" class="text-yellow-600 hover:text-yellow-900">Dépublier</a>
+                            {% endfor %}
+                            
+                            {% for product in allProducts %}
+                                <div class="bg-white shadow rounded-lg overflow-hidden">
+                                    <div class="p-4">
+                                        <div class="flex items-center">
+                                            <div class="flex-shrink-0 h-12 w-12">
+                                                {% if product.images|length > 0 %}
+                                                    <img class="h-12 w-12 rounded-md object-cover" src="{{ product.mainImage.path }}" alt="{{ product.name }}">
                                                 {% else %}
-                                                    <a href="{{ path('app_creator_product_status', {'id': product.id, 'status': 'archive'}) }}" class="text-red-600 hover:text-red-900">Archiver</a>
+                                                    <div class="h-12 w-12 rounded-md bg-gray-200 flex items-center justify-center">
+                                                        <svg class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                        </svg>
+                                                    </div>
                                                 {% endif %}
                                             </div>
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+                                            <div class="ml-4 flex-1">
+                                                <h3 class="text-lg font-medium text-gray-900">{{ product.name }}</h3>
+                                                <p class="text-sm text-gray-500">{{ product.shortDescription|length > 50 ? product.shortDescription|slice(0, 50) ~ '...' : product.shortDescription }}</p>
+                                            </div>
+                                        </div>
+                                        <div class="mt-4 grid grid-cols-2 gap-4">
+                                            <div>
+                                                <dt class="text-sm font-medium text-gray-500">Prix</dt>
+                                                <dd class="mt-1 text-sm text-gray-900">{{ (product.price / 100)|number_format(2, ',', ' ') }} €</dd>
+                                            </div>
+                                            <div>
+                                                <dt class="text-sm font-medium text-gray-500">Stock</dt>
+                                                <dd class="mt-1 text-sm text-gray-900">{{ product.stock }}</dd>
+                                            </div>
+                                            <div>
+                                                <dt class="text-sm font-medium text-gray-500">Statut</dt>
+                                                <dd class="mt-1">
+                                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                                        {% if product.status.value == 'published' %}bg-green-100 text-green-800
+                                                        {% elseif product.status.value == 'draft' %}bg-yellow-100 text-yellow-800
+                                                        {% else %}bg-gray-100 text-gray-800{% endif %}">
+                                                        {% if product.status.value == 'published' %}Publié
+                                                        {% elseif product.status.value == 'draft' %}Brouillon
+                                                        {% else %}Archivé{% endif %}
+                                                    </span>
+                                                </dd>
+                                            </div>
+                                            <div>
+                                                <dt class="text-sm font-medium text-gray-500">Date</dt>
+                                                <dd class="mt-1 text-sm text-gray-900">{{ product.createdAt|date('d/m/Y') }}</dd>
+                                            </div>
+                                        </div>
+                                        <div class="mt-4 flex flex-wrap gap-2">
+                                            {% if product.status.value == 'published' %}
+                                                <a href="{{ path('app_product_show', {'id': product.id}) }}" class="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-white bg-indigo-600 hover:bg-indigo-700">
+                                                    Voir
+                                                </a>
+                                            {% endif %}
+                                            <a href="{{ path('app_creator_product_edit', {'id': product.id}) }}" class="inline-flex items-center px-2.5 py-1.5 border border-gray-300 text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50">
+                                                Modifier
+                                            </a>
+                                            <a href="{{ path('app_creator_product_images', {'id': product.id}) }}" class="inline-flex items-center px-2.5 py-1.5 border border-gray-300 text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50">
+                                                Images
+                                            </a>
+                                            {% if product.status.value == 'draft' %}
+                                                <a href="{{ path('app_creator_product_status', {'id': product.id, 'status': 'publish'}) }}" class="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-white bg-green-600 hover:bg-green-700">
+                                                    Publier
+                                                </a>
+                                            {% elseif product.status.value == 'published' %}
+                                                <a href="{{ path('app_creator_product_status', {'id': product.id, 'status': 'draft'}) }}" class="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-white bg-yellow-600 hover:bg-yellow-700">
+                                                    Dépublier
+                                                </a>
+                                            {% else %}
+                                                <a href="{{ path('app_creator_product_status', {'id': product.id, 'status': 'draft'}) }}" class="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-white bg-blue-600 hover:bg-blue-700">
+                                                    Restaurer
+                                                </a>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
                     </div>
-                </div>
 
-                <div class="tab-content" x-show="activeTab === 'published'" x-cloak>
-                    {% if productsByStatus.published|length > 0 %}
+                    <!-- Vue desktop -->
+                    <div class="hidden sm:block">
                         <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
                             <table class="min-w-full divide-y divide-gray-200">
                                 <thead class="bg-gray-50">
                                     <tr>
                                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             Produit
+                                        </th>
+                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                            Statut
                                         </th>
                                         <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                             Prix
@@ -202,7 +194,14 @@
                                     </tr>
                                 </thead>
                                 <tbody class="bg-white divide-y divide-gray-200">
-                                    {% for product in productsByStatus.published %}
+                                    {% set allProducts = [] %}
+                                    {% for status, products in productsByStatus %}
+                                        {% for product in products %}
+                                            {% set allProducts = allProducts|merge([product]) %}
+                                        {% endfor %}
+                                    {% endfor %}
+                                    
+                                    {% for product in allProducts %}
                                         <tr>
                                             <td class="px-6 py-4 whitespace-nowrap">
                                                 <div class="flex items-center">
@@ -228,6 +227,16 @@
                                                 </div>
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap">
+                                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                                    {% if product.status.value == 'published' %}bg-green-100 text-green-800
+                                                    {% elseif product.status.value == 'draft' %}bg-yellow-100 text-yellow-800
+                                                    {% else %}bg-gray-100 text-gray-800{% endif %}">
+                                                    {% if product.status.value == 'published' %}Publié
+                                                    {% elseif product.status.value == 'draft' %}Brouillon
+                                                    {% else %}Archivé{% endif %}
+                                                </span>
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
                                                 <div class="text-sm text-gray-900">{{ (product.price / 100)|number_format(2, ',', ' ') }} €</div>
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap">
@@ -238,16 +247,158 @@
                                             </td>
                                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                                                 <div class="flex space-x-2 justify-end">
-                                                    <a href="{{ path('app_product_show', {'id': product.id}) }}" class="text-indigo-600 hover:text-indigo-900">Voir</a>
+                                                    {% if product.status.value == 'published' %}
+                                                        <a href="{{ path('app_product_show', {'id': product.id}) }}" class="text-indigo-600 hover:text-indigo-900">Voir</a>
+                                                    {% endif %}
                                                     <a href="{{ path('app_creator_product_edit', {'id': product.id}) }}" class="text-gray-600 hover:text-gray-900">Modifier</a>
                                                     <a href="{{ path('app_creator_product_images', {'id': product.id}) }}" class="text-gray-600 hover:text-gray-900">Images</a>
-                                                    <a href="{{ path('app_creator_product_status', {'id': product.id, 'status': 'draft'}) }}" class="text-yellow-600 hover:text-yellow-900">Dépublier</a>
+                                                    {% if product.status.value == 'draft' %}
+                                                        <a href="{{ path('app_creator_product_status', {'id': product.id, 'status': 'publish'}) }}" class="text-green-600 hover:text-green-900">Publier</a>
+                                                    {% elseif product.status.value == 'published' %}
+                                                        <a href="{{ path('app_creator_product_status', {'id': product.id, 'status': 'draft'}) }}" class="text-yellow-600 hover:text-yellow-900">Dépublier</a>
+                                                    {% else %}
+                                                        <a href="{{ path('app_creator_product_status', {'id': product.id, 'status': 'draft'}) }}" class="text-red-600 hover:text-red-900">Archiver</a>
+                                                    {% endif %}
                                                 </div>
                                             </td>
                                         </tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" x-show="activeTab === 'published'" x-cloak>
+                    {% if productsByStatus.published|length > 0 %}
+                        <!-- Vue mobile -->
+                        <div class="block sm:hidden">
+                            <div class="space-y-4 mt-4">
+                                {% for product in productsByStatus.published %}
+                                    <div class="bg-white shadow rounded-lg overflow-hidden">
+                                        <div class="p-4">
+                                            <div class="flex items-center">
+                                                <div class="flex-shrink-0 h-12 w-12">
+                                                    {% if product.images|length > 0 %}
+                                                        <img class="h-12 w-12 rounded-md object-cover" src="{{ product.mainImage.path }}" alt="{{ product.name }}">
+                                                    {% else %}
+                                                        <div class="h-12 w-12 rounded-md bg-gray-200 flex items-center justify-center">
+                                                            <svg class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                            </svg>
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="ml-4 flex-1">
+                                                    <h3 class="text-lg font-medium text-gray-900">{{ product.name }}</h3>
+                                                    <p class="text-sm text-gray-500">{{ product.shortDescription|length > 50 ? product.shortDescription|slice(0, 50) ~ '...' : product.shortDescription }}</p>
+                                                </div>
+                                            </div>
+                                            <div class="mt-4 grid grid-cols-2 gap-4">
+                                                <div>
+                                                    <dt class="text-sm font-medium text-gray-500">Prix</dt>
+                                                    <dd class="mt-1 text-sm text-gray-900">{{ (product.price / 100)|number_format(2, ',', ' ') }} €</dd>
+                                                </div>
+                                                <div>
+                                                    <dt class="text-sm font-medium text-gray-500">Stock</dt>
+                                                    <dd class="mt-1 text-sm text-gray-900">{{ product.stock }}</dd>
+                                                </div>
+                                                <div class="col-span-2">
+                                                    <dt class="text-sm font-medium text-gray-500">Date de création</dt>
+                                                    <dd class="mt-1 text-sm text-gray-900">{{ product.createdAt|date('d/m/Y') }}</dd>
+                                                </div>
+                                            </div>
+                                            <div class="mt-4 flex flex-wrap gap-2">
+                                                <a href="{{ path('app_product_show', {'id': product.id}) }}" class="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-white bg-indigo-600 hover:bg-indigo-700">
+                                                    Voir
+                                                </a>
+                                                <a href="{{ path('app_creator_product_edit', {'id': product.id}) }}" class="inline-flex items-center px-2.5 py-1.5 border border-gray-300 text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50">
+                                                    Modifier
+                                                </a>
+                                                <a href="{{ path('app_creator_product_images', {'id': product.id}) }}" class="inline-flex items-center px-2.5 py-1.5 border border-gray-300 text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50">
+                                                    Images
+                                                </a>
+                                                <a href="{{ path('app_creator_product_status', {'id': product.id, 'status': 'draft'}) }}" class="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-white bg-yellow-600 hover:bg-yellow-700">
+                                                    Dépublier
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- Vue desktop -->
+                        <div class="hidden sm:block">
+                            <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+                                <table class="min-w-full divide-y divide-gray-200">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Produit
+                                            </th>
+                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Prix
+                                            </th>
+                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Stock
+                                            </th>
+                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Date de création
+                                            </th>
+                                            <th scope="col" class="relative px-6 py-3">
+                                                <span class="sr-only">Actions</span>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="bg-white divide-y divide-gray-200">
+                                        {% for product in productsByStatus.published %}
+                                            <tr>
+                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                    <div class="flex items-center">
+                                                        <div class="flex-shrink-0 h-10 w-10">
+                                                            {% if product.images|length > 0 %}
+                                                                <img class="h-10 w-10 rounded-md object-cover" src="{{ product.mainImage.path }}" alt="{{ product.name }}">
+                                                            {% else %}
+                                                                <div class="h-10 w-10 rounded-md bg-gray-200 flex items-center justify-center">
+                                                                    <svg class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                                    </svg>
+                                                                </div>
+                                                            {% endif %}
+                                                        </div>
+                                                        <div class="ml-4">
+                                                            <div class="text-sm font-medium text-gray-900">
+                                                                {{ product.name }}
+                                                            </div>
+                                                            <div class="text-sm text-gray-500">
+                                                                {{ product.shortDescription|length > 50 ? product.shortDescription|slice(0, 50) ~ '...' : product.shortDescription }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                    <div class="text-sm text-gray-900">{{ (product.price / 100)|number_format(2, ',', ' ') }} €</div>
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                    <div class="text-sm text-gray-900">{{ product.stock }}</div>
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                    {{ product.createdAt|date('d/m/Y') }}
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                                    <div class="flex space-x-2 justify-end">
+                                                        <a href="{{ path('app_product_show', {'id': product.id}) }}" class="text-indigo-600 hover:text-indigo-900">Voir</a>
+                                                        <a href="{{ path('app_creator_product_edit', {'id': product.id}) }}" class="text-gray-600 hover:text-gray-900">Modifier</a>
+                                                        <a href="{{ path('app_creator_product_images', {'id': product.id}) }}" class="text-gray-600 hover:text-gray-900">Images</a>
+                                                        <a href="{{ path('app_creator_product_status', {'id': product.id, 'status': 'draft'}) }}" class="text-yellow-600 hover:text-yellow-900">Dépublier</a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     {% else %}
                         <div class="bg-white shadow overflow-hidden sm:rounded-lg p-6 text-center">
@@ -258,73 +409,130 @@
 
                 <div class="tab-content" x-show="activeTab === 'draft'" x-cloak>
                     {% if productsByStatus.draft|length > 0 %}
-                        <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
-                            <table class="min-w-full divide-y divide-gray-200">
-                                <thead class="bg-gray-50">
-                                    <tr>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Produit
-                                        </th>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Prix
-                                        </th>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Stock
-                                        </th>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Date de création
-                                        </th>
-                                        <th scope="col" class="relative px-6 py-3">
-                                            <span class="sr-only">Actions</span>
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody class="bg-white divide-y divide-gray-200">
-                                    {% for product in productsByStatus.draft %}
+                        <!-- Vue mobile -->
+                        <div class="block sm:hidden">
+                            <div class="space-y-4 mt-4">
+                                {% for product in productsByStatus.draft %}
+                                    <div class="bg-white shadow rounded-lg overflow-hidden">
+                                        <div class="p-4">
+                                            <div class="flex items-center">
+                                                <div class="flex-shrink-0 h-12 w-12">
+                                                    {% if product.images|length > 0 %}
+                                                        <img class="h-12 w-12 rounded-md object-cover" src="{{ product.mainImage.path }}" alt="{{ product.name }}">
+                                                    {% else %}
+                                                        <div class="h-12 w-12 rounded-md bg-gray-200 flex items-center justify-center">
+                                                            <svg class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                            </svg>
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="ml-4 flex-1">
+                                                    <h3 class="text-lg font-medium text-gray-900">{{ product.name }}</h3>
+                                                    <p class="text-sm text-gray-500">{{ product.shortDescription|length > 50 ? product.shortDescription|slice(0, 50) ~ '...' : product.shortDescription }}</p>
+                                                </div>
+                                            </div>
+                                            <div class="mt-4 grid grid-cols-2 gap-4">
+                                                <div>
+                                                    <dt class="text-sm font-medium text-gray-500">Prix</dt>
+                                                    <dd class="mt-1 text-sm text-gray-900">{{ (product.price / 100)|number_format(2, ',', ' ') }} €</dd>
+                                                </div>
+                                                <div>
+                                                    <dt class="text-sm font-medium text-gray-500">Stock</dt>
+                                                    <dd class="mt-1 text-sm text-gray-900">{{ product.stock }}</dd>
+                                                </div>
+                                                <div class="col-span-2">
+                                                    <dt class="text-sm font-medium text-gray-500">Date de création</dt>
+                                                    <dd class="mt-1 text-sm text-gray-900">{{ product.createdAt|date('d/m/Y') }}</dd>
+                                                </div>
+                                            </div>
+                                            <div class="mt-4 flex flex-wrap gap-2">
+                                                <a href="{{ path('app_creator_product_edit', {'id': product.id}) }}" class="inline-flex items-center px-2.5 py-1.5 border border-gray-300 text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50">
+                                                    Modifier
+                                                </a>
+                                                <a href="{{ path('app_creator_product_images', {'id': product.id}) }}" class="inline-flex items-center px-2.5 py-1.5 border border-gray-300 text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50">
+                                                    Images
+                                                </a>
+                                                <a href="{{ path('app_creator_product_status', {'id': product.id, 'status': 'publish'}) }}" class="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-white bg-green-600 hover:bg-green-700">
+                                                    Publier
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- Vue desktop -->
+                        <div class="hidden sm:block">
+                            <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+                                <table class="min-w-full divide-y divide-gray-200">
+                                    <thead class="bg-gray-50">
                                         <tr>
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <div class="flex items-center">
-                                                    <div class="flex-shrink-0 h-10 w-10">
-                                                        {% if product.images|length > 0 %}
-                                                            <img class="h-10 w-10 rounded-md object-cover" src="{{ product.mainImage.path }}" alt="{{ product.name }}">
-                                                        {% else %}
-                                                            <div class="h-10 w-10 rounded-md bg-gray-200 flex items-center justify-center">
-                                                                <svg class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                                                </svg>
-                                                            </div>
-                                                        {% endif %}
-                                                    </div>
-                                                    <div class="ml-4">
-                                                        <div class="text-sm font-medium text-gray-900">
-                                                            {{ product.name }}
-                                                        </div>
-                                                        <div class="text-sm text-gray-500">
-                                                            {{ product.shortDescription|length > 50 ? product.shortDescription|slice(0, 50) ~ '...' : product.shortDescription }}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <div class="text-sm text-gray-900">{{ (product.price / 100)|number_format(2, ',', ' ') }} €</div>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <div class="text-sm text-gray-900">{{ product.stock }}</div>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                {{ product.createdAt|date('d/m/Y') }}
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                                <div class="flex space-x-2 justify-end">
-                                                    <a href="{{ path('app_creator_product_edit', {'id': product.id}) }}" class="text-gray-600 hover:text-gray-900">Modifier</a>
-                                                    <a href="{{ path('app_creator_product_images', {'id': product.id}) }}" class="text-gray-600 hover:text-gray-900">Images</a>
-                                                    <a href="{{ path('app_creator_product_status', {'id': product.id, 'status': 'publish'}) }}" class="text-green-600 hover:text-green-900">Publier</a>
-                                                </div>
-                                            </td>
+                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Produit
+                                            </th>
+                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Prix
+                                            </th>
+                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Stock
+                                            </th>
+                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Date de création
+                                            </th>
+                                            <th scope="col" class="relative px-6 py-3">
+                                                <span class="sr-only">Actions</span>
+                                            </th>
                                         </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody class="bg-white divide-y divide-gray-200">
+                                        {% for product in productsByStatus.draft %}
+                                            <tr>
+                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                    <div class="flex items-center">
+                                                        <div class="flex-shrink-0 h-10 w-10">
+                                                            {% if product.images|length > 0 %}
+                                                                <img class="h-10 w-10 rounded-md object-cover" src="{{ product.mainImage.path }}" alt="{{ product.name }}">
+                                                            {% else %}
+                                                                <div class="h-10 w-10 rounded-md bg-gray-200 flex items-center justify-center">
+                                                                    <svg class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                                    </svg>
+                                                                </div>
+                                                            {% endif %}
+                                                        </div>
+                                                        <div class="ml-4">
+                                                            <div class="text-sm font-medium text-gray-900">
+                                                                {{ product.name }}
+                                                            </div>
+                                                            <div class="text-sm text-gray-500">
+                                                                {{ product.shortDescription|length > 50 ? product.shortDescription|slice(0, 50) ~ '...' : product.shortDescription }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                    <div class="text-sm text-gray-900">{{ (product.price / 100)|number_format(2, ',', ' ') }} €</div>
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                    <div class="text-sm text-gray-900">{{ product.stock }}</div>
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                    {{ product.createdAt|date('d/m/Y') }}
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                                    <div class="flex space-x-2 justify-end">
+                                                        <a href="{{ path('app_creator_product_edit', {'id': product.id}) }}" class="text-gray-600 hover:text-gray-900">Modifier</a>
+                                                        <a href="{{ path('app_creator_product_images', {'id': product.id}) }}" class="text-gray-600 hover:text-gray-900">Images</a>
+                                                        <a href="{{ path('app_creator_product_status', {'id': product.id, 'status': 'publish'}) }}" class="text-green-600 hover:text-green-900">Publier</a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     {% else %}
                         <div class="bg-white shadow overflow-hidden sm:rounded-lg p-6 text-center">
@@ -335,73 +543,130 @@
 
                 <div class="tab-content" x-show="activeTab === 'archived'" x-cloak>
                     {% if productsByStatus.archived|length > 0 %}
-                        <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
-                            <table class="min-w-full divide-y divide-gray-200">
-                                <thead class="bg-gray-50">
-                                    <tr>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Produit
-                                        </th>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Prix
-                                        </th>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Stock
-                                        </th>
-                                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                            Date de création
-                                        </th>
-                                        <th scope="col" class="relative px-6 py-3">
-                                            <span class="sr-only">Actions</span>
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody class="bg-white divide-y divide-gray-200">
-                                    {% for product in productsByStatus.archived %}
+                        <!-- Vue mobile -->
+                        <div class="block sm:hidden">
+                            <div class="space-y-4 mt-4">
+                                {% for product in productsByStatus.archived %}
+                                    <div class="bg-white shadow rounded-lg overflow-hidden">
+                                        <div class="p-4">
+                                            <div class="flex items-center">
+                                                <div class="flex-shrink-0 h-12 w-12">
+                                                    {% if product.images|length > 0 %}
+                                                        <img class="h-12 w-12 rounded-md object-cover" src="{{ product.mainImage.path }}" alt="{{ product.name }}">
+                                                    {% else %}
+                                                        <div class="h-12 w-12 rounded-md bg-gray-200 flex items-center justify-center">
+                                                            <svg class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                            </svg>
+                                                        </div>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="ml-4 flex-1">
+                                                    <h3 class="text-lg font-medium text-gray-900">{{ product.name }}</h3>
+                                                    <p class="text-sm text-gray-500">{{ product.shortDescription|length > 50 ? product.shortDescription|slice(0, 50) ~ '...' : product.shortDescription }}</p>
+                                                </div>
+                                            </div>
+                                            <div class="mt-4 grid grid-cols-2 gap-4">
+                                                <div>
+                                                    <dt class="text-sm font-medium text-gray-500">Prix</dt>
+                                                    <dd class="mt-1 text-sm text-gray-900">{{ (product.price / 100)|number_format(2, ',', ' ') }} €</dd>
+                                                </div>
+                                                <div>
+                                                    <dt class="text-sm font-medium text-gray-500">Stock</dt>
+                                                    <dd class="mt-1 text-sm text-gray-900">{{ product.stock }}</dd>
+                                                </div>
+                                                <div class="col-span-2">
+                                                    <dt class="text-sm font-medium text-gray-500">Date de création</dt>
+                                                    <dd class="mt-1 text-sm text-gray-900">{{ product.createdAt|date('d/m/Y') }}</dd>
+                                                </div>
+                                            </div>
+                                            <div class="mt-4 flex flex-wrap gap-2">
+                                                <a href="{{ path('app_creator_product_edit', {'id': product.id}) }}" class="inline-flex items-center px-2.5 py-1.5 border border-gray-300 text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50">
+                                                    Modifier
+                                                </a>
+                                                <a href="{{ path('app_creator_product_images', {'id': product.id}) }}" class="inline-flex items-center px-2.5 py-1.5 border border-gray-300 text-xs font-medium rounded text-gray-700 bg-white hover:bg-gray-50">
+                                                    Images
+                                                </a>
+                                                <a href="{{ path('app_creator_product_status', {'id': product.id, 'status': 'draft'}) }}" class="inline-flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-white bg-blue-600 hover:bg-blue-700">
+                                                    Restaurer
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+
+                        <!-- Vue desktop -->
+                        <div class="hidden sm:block">
+                            <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+                                <table class="min-w-full divide-y divide-gray-200">
+                                    <thead class="bg-gray-50">
                                         <tr>
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <div class="flex items-center">
-                                                    <div class="flex-shrink-0 h-10 w-10">
-                                                        {% if product.images|length > 0 %}
-                                                            <img class="h-10 w-10 rounded-md object-cover" src="{{ product.mainImage.path }}" alt="{{ product.name }}">
-                                                        {% else %}
-                                                            <div class="h-10 w-10 rounded-md bg-gray-200 flex items-center justify-center">
-                                                                <svg class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                                                                </svg>
-                                                            </div>
-                                                        {% endif %}
-                                                    </div>
-                                                    <div class="ml-4">
-                                                        <div class="text-sm font-medium text-gray-900">
-                                                            {{ product.name }}
-                                                        </div>
-                                                        <div class="text-sm text-gray-500">
-                                                            {{ product.shortDescription|length > 50 ? product.shortDescription|slice(0, 50) ~ '...' : product.shortDescription }}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <div class="text-sm text-gray-900">{{ (product.price / 100)|number_format(2, ',', ' ') }} €</div>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap">
-                                                <div class="text-sm text-gray-900">{{ product.stock }}</div>
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                                {{ product.createdAt|date('d/m/Y') }}
-                                            </td>
-                                            <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                                <div class="flex space-x-2 justify-end">
-                                                    <a href="{{ path('app_creator_product_edit', {'id': product.id}) }}" class="text-gray-600 hover:text-gray-900">Modifier</a>
-                                                    <a href="{{ path('app_creator_product_images', {'id': product.id}) }}" class="text-gray-600 hover:text-gray-900">Images</a>
-                                                    <a href="{{ path('app_creator_product_status', {'id': product.id, 'status': 'publish'}) }}" class="text-green-600 hover:text-green-900">Publier</a>
-                                                </div>
-                                            </td>
+                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Produit
+                                            </th>
+                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Prix
+                                            </th>
+                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Stock
+                                            </th>
+                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                Date de création
+                                            </th>
+                                            <th scope="col" class="relative px-6 py-3">
+                                                <span class="sr-only">Actions</span>
+                                            </th>
                                         </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
+                                    </thead>
+                                    <tbody class="bg-white divide-y divide-gray-200">
+                                        {% for product in productsByStatus.archived %}
+                                            <tr>
+                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                    <div class="flex items-center">
+                                                        <div class="flex-shrink-0 h-10 w-10">
+                                                            {% if product.images|length > 0 %}
+                                                                <img class="h-10 w-10 rounded-md object-cover" src="{{ product.mainImage.path }}" alt="{{ product.name }}">
+                                                            {% else %}
+                                                                <div class="h-10 w-10 rounded-md bg-gray-200 flex items-center justify-center">
+                                                                    <svg class="h-6 w-6 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                                                                    </svg>
+                                                                </div>
+                                                            {% endif %}
+                                                        </div>
+                                                        <div class="ml-4">
+                                                            <div class="text-sm font-medium text-gray-900">
+                                                                {{ product.name }}
+                                                            </div>
+                                                            <div class="text-sm text-gray-500">
+                                                                {{ product.shortDescription|length > 50 ? product.shortDescription|slice(0, 50) ~ '...' : product.shortDescription }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                    <div class="text-sm text-gray-900">{{ (product.price / 100)|number_format(2, ',', ' ') }} €</div>
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap">
+                                                    <div class="text-sm text-gray-900">{{ product.stock }}</div>
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                    {{ product.createdAt|date('d/m/Y') }}
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                                    <div class="flex space-x-2 justify-end">
+                                                        <a href="{{ path('app_creator_product_edit', {'id': product.id}) }}" class="text-gray-600 hover:text-gray-900">Modifier</a>
+                                                        <a href="{{ path('app_creator_product_images', {'id': product.id}) }}" class="text-gray-600 hover:text-gray-900">Images</a>
+                                                        <a href="{{ path('app_creator_product_status', {'id': product.id, 'status': 'publish'}) }}" class="text-green-600 hover:text-green-900">Publier</a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     {% else %}
                         <div class="bg-white shadow overflow-hidden sm:rounded-lg p-6 text-center">
