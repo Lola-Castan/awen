@@ -5,12 +5,6 @@
 		<div class="existing-images-container field-group mb-4">
 			<div class="d-flex align-items-center justify-content-between mb-2">
 				<h3 class="mb-0">Images associées ({{ entity.instance.images|length }})</h3>
-				<a href="{{ ea_url()
-					.setController('App\\Controller\\Admin\\ImageCrudController')
-					.setAction('new') }}" 
-					class="btn btn-sm btn-success">
-					<i class="fa fa-plus"></i> Ajouter une image
-				</a>
 			</div>
 			
 			<div class="existing-images-grid">
@@ -48,11 +42,11 @@
 											<i class="fa fa-edit"></i>
 										</a>
 										<form method="post" 
-											  action="{{ ea_url()
+												action="{{ ea_url()
 												.setController('App\\Controller\\Admin\\ImageCrudController')
 												.setAction('delete')
 												.setEntityId(image.id) }}"
-											  onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette image ?')">
+												onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette image ?')">
 											<input type="hidden" name="_csrf_token" value="{{ csrf_token('ea-delete-' ~ image.id) }}">
 											<button type="submit" class="btn btn-sm btn-danger" title="Supprimer l'image">
 												<i class="fa fa-trash"></i>
