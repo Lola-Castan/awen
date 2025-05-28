@@ -36,29 +36,29 @@
                         Modifiez les détails de votre produit
                     </p>
                 </div>
-                <div class="flex space-x-3">
-                    <a href="{{ path('app_creator_product_images', {'id': product.id}) }}" class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3">
+                    <a href="{{ path('app_creator_product_images', {'id': product.id}) }}" class="inline-flex items-center justify-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                         <svg xmlns="http://www.w3.org/2000/svg" class="-ml-1 mr-2 h-5 w-5 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
                         </svg>
                         Gérer les images
                     </a>
                     {% if product.status.value == 'draft' %}
-                        <a href="{{ path('app_creator_product_status', {'id': product.id, 'status': 'publish'}) }}" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                        <a href="{{ path('app_creator_product_status', {'id': product.id, 'status': 'publish'}) }}" class="inline-flex items-center justify-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
                             <svg xmlns="http://www.w3.org/2000/svg" class="-ml-1 mr-2 h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
                             </svg>
                             Publier
                         </a>
                     {% elseif product.status.value == 'published' %}
-                        <div class="inline-flex rounded-md shadow-sm">
-                            <a href="{{ path('app_creator_product_status', {'id': product.id, 'status': 'draft'}) }}" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-l-md shadow-sm text-white bg-yellow-600 hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500">
+                        <div class="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3">
+                            <a href="{{ path('app_creator_product_status', {'id': product.id, 'status': 'draft'}) }}" class="inline-flex items-center justify-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-yellow-600 hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="-ml-1 mr-2 h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                     <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
                                 </svg>
                                 Passer en brouillon
                             </a>
-                            <a href="{{ path('app_creator_product_status', {'id': product.id, 'status': 'archive'}) }}" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-r-md shadow-sm text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                            <a href="{{ path('app_creator_product_status', {'id': product.id, 'status': 'archive'}) }}" class="inline-flex items-center justify-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="-ml-1 mr-2 h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                     <path d="M4 3a2 2 0 100 4h12a2 2 0 100-4H4z" />
                                     <path fill-rule="evenodd" d="M3 8h14v7a2 2 0 01-2 2H5a2 2 0 01-2-2V8zm5 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" clip-rule="evenodd" />
@@ -67,7 +67,7 @@
                             </a>
                         </div>
                     {% elseif product.status.value == 'archived' %}
-                        <a href="{{ path('app_creator_product_status', {'id': product.id, 'status': 'draft'}) }}" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                        <a href="{{ path('app_creator_product_status', {'id': product.id, 'status': 'draft'}) }}" class="inline-flex items-center justify-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                             <svg xmlns="http://www.w3.org/2000/svg" class="-ml-1 mr-2 h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                 <path d="M4 3a2 2 0 100 4h12a2 2 0 100-4H4z" />
                                 <path fill-rule="evenodd" d="M3 8h14v7a2 2 0 01-2 2H5a2 2 0 01-2-2V8zm5 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" clip-rule="evenodd" />
@@ -179,8 +179,17 @@
                     <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
                         {{ form_label(form.categories, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2'}}) }}
                         <div class="mt-1 sm:mt-0 sm:col-span-2">
-                            <div class="grid grid-cols-2 gap-4">
-                                {{ form_widget(form.categories, {'attr': {'class': 'block focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300 rounded-md'}}) }}
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                {% for category in form.categories %}
+                                    <div class="relative flex items-start">
+                                        <div class="flex items-center h-5">
+                                            {{ form_widget(category, {'attr': {'class': 'focus:ring-primary h-4 w-4 text-primary border-gray-300 rounded'}}) }}
+                                        </div>
+                                        <div class="ml-3 text-sm">
+                                            <label for="{{ category.vars.id }}" class="font-medium text-gray-700">{{ category.vars.label }}</label>
+                                        </div>
+                                    </div>
+                                {% endfor %}
                             </div>
                             {{ form_errors(form.categories, {'attr': {'class': 'text-red-500 text-sm mt-1'}}) }}
                         </div>
