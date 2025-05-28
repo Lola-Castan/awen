@@ -64,6 +64,7 @@ class CreatorProductType extends AbstractType
             ->add('price', MoneyType::class, [
                 'label' => 'Prix (en €)',
                 'divisor' => 100, // Pour convertir les centimes en euros
+                'currency' => false,
                 'constraints' => [
                     new NotBlank(['message' => 'Veuillez indiquer un prix']),
                     new GreaterThanOrEqual([
