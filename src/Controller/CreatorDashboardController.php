@@ -242,4 +242,25 @@ class CreatorDashboardController extends AbstractController
 			'orders' => $orders
 		]);
 	}
+	
+	#[Route('/order/{id}', name: 'app_creator_dashboard_order_detail')]
+	public function orderDetail(Order $order): Response
+	{
+		// Vérifier que la commande contient au moins un produit du créateur
+		$hasCreatorProduct = false;
+		foreach ($order->getOrderDetails() as $detail) {
+			if ($detail->getProduct()->getCreator() === $this->getUser()) {
+				$hasCreatorProduct = true;
+				break;
+			}
+		}
+
+		if (!$hasCreatorProduct) {
+			throw $this->createAccessDeniedException('Vous n\'avez pas accès à cette commande.');
+		}
+
+		return $this->render('creator/order_detail.html.twig', [
+			'order' => $order
+		]);
+	}
 }

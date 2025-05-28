@@ -27,7 +27,9 @@
                     {% for order in orders %}
                         <tr>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                #{{ order.id }}
+                                <a href="{{ path('app_creator_dashboard_order_detail', {'id': order.id}) }}" class="text-indigo-600 hover:text-indigo-900">
+                                    Consulter la commande #{{ order.id }}
+                                </a>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                                 {{ order.createdAt|date('d/m/Y H:i') }}
@@ -57,7 +59,7 @@
                                     {% elseif order.status.value == 'cancelled' %}
                                         bg-red-100 text-red-800
                                     {% endif %}">
-                                    {{ order.status.value }}
+                                    {{ order.status.label }}
                                 </span>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">

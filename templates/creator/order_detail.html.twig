@@ -1,0 +1,140 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détail de la commande #{{ order.id }} - Espace créateur{% endblock %}
+
+{% block body %}
+<div class="container mx-auto px-4 py-8">
+    <div class="mb-6">
+        <a href="{{ path('app_creator_dashboard_orders') }}" class="text-indigo-600 hover:text-indigo-800">
+            <span class="inline-flex items-center">
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+                </svg>
+                Retour aux commandes
+            </span>
+        </a>
+    </div>
+
+    <div class="bg-white shadow-lg rounded-lg overflow-hidden">
+        {# En-tête de la commande #}
+        <div class="border-b border-gray-200 px-6 py-4">
+            <div class="flex justify-between items-center">
+                <h1 class="text-2xl font-bold text-gray-900">
+                    Commande #{{ order.id }}
+                </h1>
+                <span class="px-3 py-1 rounded-full text-sm font-semibold
+                    {% if order.status.value == 'pending' %}
+                        bg-yellow-100 text-yellow-800
+                    {% elseif order.status.value == 'processing' %}
+                        bg-blue-100 text-blue-800
+                    {% elseif order.status.value == 'shipped' %}
+                        bg-purple-100 text-purple-800
+                    {% elseif order.status.value == 'delivered' %}
+                        bg-green-100 text-green-800
+                    {% elseif order.status.value == 'cancelled' %}
+                        bg-red-100 text-red-800
+                    {% endif %}">
+                    {{ order.status.label }}
+                </span>
+            </div>
+            <p class="text-sm text-gray-500 mt-2">
+                Commandée le {{ order.createdAt|date('d/m/Y à H:i') }}
+            </p>
+        </div>
+
+        <div class="p-6">
+            {# Informations client #}
+            <div class="mb-8">
+                <h2 class="text-lg font-semibold text-gray-900 mb-4">Informations client</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h3 class="text-sm font-medium text-gray-500 mb-2">Client</h3>
+                        <p class="text-gray-900">{{ order.user.firstName }} {{ order.user.lastName }}</p>
+                        <p class="text-gray-600">{{ order.user.email }}</p>
+                    </div>
+                    <div>
+                        <h3 class="text-sm font-medium text-gray-500 mb-2">Adresse de livraison</h3>
+                        <p class="text-gray-900 whitespace-pre-line">{{ order.shippingAddress }}</p>
+                    </div>
+                </div>
+            </div>
+
+            {# Produits de la commande #}
+            <div class="mb-8">
+                <h2 class="text-lg font-semibold text-gray-900 mb-4">Produits commandés</h2>
+                <div class="border rounded-lg overflow-hidden">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Produit</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Prix unitaire</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Quantité</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            {% for detail in order.orderDetails %}
+                                {% if detail.product.creator == app.user %}
+                                    <tr>
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center">
+                                                {% if detail.product.images|length > 0 %}
+                                                    <img src="{{ asset('uploads/images/' ~ detail.product.images|first.filename) }}" 
+                                                         alt="{{ detail.product.name }}" 
+                                                         class="w-12 h-12 object-cover rounded">
+                                                {% endif %}
+                                                <div class="ml-4">
+                                                    <div class="text-sm font-medium text-gray-900">
+                                                        {{ detail.product.name }}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-500">
+                                            {{ (detail.unitPriceHT / 100)|number_format(2, ',', ' ') }} € HT
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-500">
+                                            {{ detail.quantity }}
+                                        </td>
+                                        <td class="px-6 py-4 text-sm text-gray-900">
+                                            {{ (detail.totalPriceHT / 100)|number_format(2, ',', ' ') }} € HT
+                                        </td>
+                                    </tr>
+                                {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            {# Récapitulatif des montants #}
+            <div class="border-t border-gray-200 pt-4">
+                <div class="flex justify-end">
+                    <div class="w-full max-w-sm">
+                        <dl class="space-y-2">
+                            <div class="flex justify-between">
+                                <dt class="text-sm text-gray-600">Total HT</dt>
+                                <dd class="text-sm text-gray-900">{{ (order.totalHT / 100)|number_format(2, ',', ' ') }} €</dd>
+                            </div>
+                            <div class="flex justify-between">
+                                <dt class="text-sm text-gray-600">TVA</dt>
+                                <dd class="text-sm text-gray-900">{{ (order.tvaAmount / 100)|number_format(2, ',', ' ') }} €</dd>
+                            </div>
+                            <div class="flex justify-between">
+                                <dt class="text-sm text-gray-600">Frais de port</dt>
+                                <dd class="text-sm text-gray-900">{{ (order.shippingCost / 100)|number_format(2, ',', ' ') }} €</dd>
+                            </div>
+                            <div class="flex justify-between pt-2 border-t border-gray-200">
+                                <dt class="text-base font-medium text-gray-900">Total TTC</dt>
+                                <dd class="text-base font-medium text-gray-900">
+                                    {{ ((order.totalHT + order.tvaAmount + order.shippingCost) / 100)|number_format(2, ',', ' ') }} €
+                                </dd>
+                            </div>
+                        </dl>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 

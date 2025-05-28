@@ -88,9 +88,6 @@
                                 <a href="{{ path('app_creator_dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
                                     Espace créateur
                                 </a>
-                                <a href="{{ path('app_creator_show', {'id': app.user.id}) }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
-                                    Mon profil créateur
-                                </a>
                             {% else %}
                                 <a href="{{ path('app_profile_show', {'username': app.user.username}) }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
                                     Mon profil
