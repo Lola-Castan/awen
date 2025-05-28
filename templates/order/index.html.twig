@@ -1,0 +1,129 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mes commandes - {{ parent() }}{% endblock %}
+
+{% block body %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <h1 class="text-3xl font-bold text-gray-900 mb-8">Mes commandes</h1>
+
+    {% if orders is empty %}
+        <div class="bg-white rounded-lg shadow p-6 text-center">
+            <p class="text-gray-500">Vous n'avez pas encore passé de commande.</p>
+            <a href="{{ path('app_product_index') }}" class="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary hover:bg-primary-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+                Découvrir nos produits
+            </a>
+        </div>
+    {% else %}
+        <div class="space-y-6">
+            {% for order in orders %}
+                <div class="bg-white rounded-lg shadow overflow-hidden">
+                    <div class="px-6 py-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h2 class="text-lg font-medium text-gray-900">
+                                    Commande #{{ order.id }}
+                                </h2>
+                                <p class="mt-1 text-sm text-gray-500">
+                                    Passée le {{ order.createdAt|date('d/m/Y') }}
+                                </p>
+                            </div>
+                            <div class="flex items-center">
+                                <span class="px-3 py-1 rounded-full text-sm font-medium
+                                    {% if order.status.value == 'pending' %}
+                                        bg-yellow-100 text-yellow-800
+                                    {% elseif order.status.value == 'paid' %}
+                                        bg-blue-100 text-blue-800
+                                    {% elseif order.status.value == 'processing' %}
+                                        bg-purple-100 text-purple-800
+                                    {% elseif order.status.value == 'shipped' %}
+                                        bg-indigo-100 text-indigo-800
+                                    {% elseif order.status.value == 'delivered' %}
+                                        bg-green-100 text-green-800
+                                    {% elseif order.status.value == 'cancelled' %}
+                                        bg-red-100 text-red-800
+                                    {% elseif order.status.value == 'refunded' %}
+                                        bg-gray-100 text-gray-800
+                                    {% endif %}">
+                                    {{ order.status.label }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 border-t border-gray-200 pt-4">
+                            <div class="flow-root">
+                                <ul class="-my-4 divide-y divide-gray-200">
+                                    {% for detail in order.orderDetails %}
+                                        <li class="flex items-center py-4">
+                                            {% if detail.product.images is not empty %}
+                                                <img src="{{ asset('uploads/products/' ~ detail.product.images|first.filename) }}" 
+                                                     alt="{{ detail.product.name }}" 
+                                                     class="h-16 w-16 flex-none rounded-md object-cover object-center">
+                                            {% else %}
+                                                <div class="h-16 w-16 flex-none rounded-md bg-gray-200"></div>
+                                            {% endif %}
+                                            <div class="ml-4 flex flex-1 flex-col">
+                                                <div>
+                                                    <div class="flex justify-between text-base font-medium text-gray-900">
+                                                        <h3>{{ detail.product.name }}</h3>
+                                                        <p class="ml-4">{{ (detail.totalPriceTTC/100)|number_format(2, ',', ' ') }} €</p>
+                                                    </div>
+                                                    <p class="mt-1 text-sm text-gray-500">Quantité : {{ detail.quantity }}</p>
+                                                    {% if detail.discountPercentage %}
+                                                        <p class="mt-1 text-sm text-green-600">Remise : {{ detail.discountPercentage }}%</p>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 border-t border-gray-200 pt-4">
+                            <div class="flex justify-between text-base font-medium text-gray-900">
+                                <p>Sous-total</p>
+                                <p>{{ (order.totalHT/100)|number_format(2, ',', ' ') }} €</p>
+                            </div>
+                            <div class="flex justify-between text-base font-medium text-gray-500 mt-2">
+                                <p>TVA</p>
+                                <p>{{ (order.tvaAmount/100)|number_format(2, ',', ' ') }} €</p>
+                            </div>
+                            <div class="flex justify-between text-base font-medium text-gray-500 mt-2">
+                                <p>Frais de livraison</p>
+                                <p>{{ (order.shippingCost/100)|number_format(2, ',', ' ') }} €</p>
+                            </div>
+                            <div class="flex justify-between text-lg font-bold text-gray-900 mt-4">
+                                <p>Total</p>
+                                <p>{{ ((order.totalHT + order.tvaAmount + order.shippingCost)/100)|number_format(2, ',', ' ') }} €</p>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 border-t border-gray-200 pt-4 text-sm text-gray-500">
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <h4 class="font-medium text-gray-900">Adresse de livraison</h4>
+                                    <p class="mt-1">{{ order.shippingAddress }}</p>
+                                </div>
+                                <div>
+                                    <h4 class="font-medium text-gray-900">Adresse de facturation</h4>
+                                    <p class="mt-1">{{ order.billingAddress }}</p>
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <h4 class="font-medium text-gray-900">Mode de paiement</h4>
+                                <p class="mt-1">{{ order.paymentMethod|capitalize }}</p>
+                            </div>
+                            {% if order.expectedDeliveryDate %}
+                                <div class="mt-4">
+                                    <h4 class="font-medium text-gray-900">Livraison prévue</h4>
+                                    <p class="mt-1">{{ order.expectedDeliveryDate|date('d/m/Y') }}</p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+</div>
+{% endblock %} 

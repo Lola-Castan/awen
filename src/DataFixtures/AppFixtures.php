@@ -13,6 +13,9 @@ use App\Entity\EventCategory;
 use App\Enum\ProductStatus;
 use App\Enum\EventStatus;
 use App\Enum\EventUserStatus;
+use App\Entity\Order;
+use App\Entity\OrderDetail;
+use App\Enum\OrderStatus;
 use Doctrine\Persistence\ObjectManager;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -527,6 +530,92 @@ L\'ambiance était conviviale et le petit groupe a permis d\'avoir un suivi pers
             ->addImage($image3)
             ->addImage($image7);
         $manager->persist($post7);
+
+        // Création des commandes
+        
+        // Commande 1 : Commande complétée par l'utilisateur de base
+        $order1 = new Order();
+        $order1->setUser($user)
+            ->setStatus(OrderStatus::Delivered)
+            ->setPaymentMethod('card')
+            ->setShippingCost('500') // 5.00 EUR
+            ->setTotalHT('4165') // 41.65 EUR
+            ->setTvaAmount('833') // 8.33 EUR (20% de 41.65)
+            ->setShippingAddress('15 rue des Lilas, 75001 Paris')
+            ->setBillingAddress('15 rue des Lilas, 75001 Paris')
+            ->setExpectedDeliveryDate(new \DateTimeImmutable('-5 days'))
+            ->setDeliveredAt(new \DateTimeImmutable('-3 days'));
+        
+        $orderDetail1 = new OrderDetail();
+        $orderDetail1->setOrderRef($order1)
+            ->setProduct($product1)
+            ->setQuantity(1)
+            ->setUnitPriceHT('1666') // 16.66 EUR
+            ->setUnitPriceTTC('1999') // 19.99 EUR
+            ->setTotalPriceHT('1666')
+            ->setTotalPriceTTC('1999');
+        
+        $orderDetail2 = new OrderDetail();
+        $orderDetail2->setOrderRef($order1)
+            ->setProduct($product2)
+            ->setQuantity(1)
+            ->setUnitPriceHT('2499') // 24.99 EUR
+            ->setUnitPriceTTC('2999') // 29.99 EUR
+            ->setTotalPriceHT('2499')
+            ->setTotalPriceTTC('2999');
+            
+        $manager->persist($order1);
+        $manager->persist($orderDetail1);
+        $manager->persist($orderDetail2);
+        
+        // Commande 2 : Commande en cours de traitement
+        $order2 = new Order();
+        $order2->setUser($admin)
+            ->setStatus(OrderStatus::Processing)
+            ->setPaymentMethod('paypal')
+            ->setShippingCost('0') // Livraison gratuite
+            ->setTotalHT('8325') // 83.25 EUR
+            ->setTvaAmount('1665') // 16.65 EUR (20% de 83.25)
+            ->setShippingAddress('42 avenue des Champs-Élysées, 75008 Paris')
+            ->setBillingAddress('42 avenue des Champs-Élysées, 75008 Paris')
+            ->setExpectedDeliveryDate(new \DateTimeImmutable('+5 days'));
+        
+        $orderDetail3 = new OrderDetail();
+        $orderDetail3->setOrderRef($order2)
+            ->setProduct($product3)
+            ->setQuantity(1)
+            ->setUnitPriceHT('8325')
+            ->setUnitPriceTTC('9990')
+            ->setTotalPriceHT('8325')
+            ->setTotalPriceTTC('9990');
+            
+        $manager->persist($order2);
+        $manager->persist($orderDetail3);
+        
+        // Commande 3 : Commande en attente de paiement
+        $order3 = new Order();
+        $order3->setUser($user)
+            ->setStatus(OrderStatus::Pending)
+            ->setPaymentMethod('card')
+            ->setShippingCost('500') // 5.00 EUR
+            ->setTotalHT('3332') // 33.32 EUR
+            ->setTvaAmount('666') // 6.66 EUR (20% de 33.32)
+            ->setShippingAddress('15 rue des Lilas, 75001 Paris')
+            ->setBillingAddress('15 rue des Lilas, 75001 Paris')
+            ->setExpectedDeliveryDate(new \DateTimeImmutable('+7 days'));
+        
+        $orderDetail4 = new OrderDetail();
+        $orderDetail4->setOrderRef($order3)
+            ->setProduct($product1)
+            ->setQuantity(2)
+            ->setUnitPriceHT('1666')
+            ->setUnitPriceTTC('1999')
+            ->setTotalPriceHT('3332')
+            ->setTotalPriceTTC('3998')
+            ->setDiscountPercentage('10.00'); // 10% de réduction
+            
+        $manager->persist($order3);
+        $manager->persist($orderDetail4);
 
         $manager->flush();
     }
