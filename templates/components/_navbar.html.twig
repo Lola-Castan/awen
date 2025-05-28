@@ -84,8 +84,10 @@
                             role="menu"
                             aria-orientation="vertical"
                             aria-labelledby="user-menu-button"
-                            tabindex="-1">
-                            {% if is_granted('ROLE_CREATOR') %}
+                            tabindex="-1">                            {% if is_granted('ROLE_CREATOR') %}
+                                <a href="{{ path('app_creator_dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
+                                    Espace créateur
+                                </a>
                                 <a href="{{ path('app_creator_show', {'id': app.user.id}) }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
                                     Mon profil créateur
                                 </a>
@@ -148,10 +150,15 @@
                         {{ app.session.get('cart')|length }}
                     </span>
                 {% endif %}
-            </a>
-            {% if not app.user %}
+            </a>            {% if not app.user %}
                 <a href="{{ path('app_login') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">Connexion</a>
                 <a href="{{ path('app_register') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">Inscription</a>
+            {% else %}
+                {% if is_granted('ROLE_CREATOR') %}
+                    <a href="{{ path('app_creator_dashboard') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
+                        Espace créateur
+                    </a>
+                {% endif %}
             {% endif %}
         </div>
     </div>
