@@ -89,11 +89,10 @@
                                 <a href="{{ path('app_creator_dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
                                     Espace créateur
                                 </a>
-                            {% else %}
+                            {% endif %}
                                 <a href="{{ path('app_profile_show', {'username': app.user.username}) }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
                                     Mon profil
                                 </a>
-                            {% endif %}
                             <a href="{{ path('app_account_settings') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
                                 Mon compte
                             </a>

@@ -39,6 +39,7 @@ class CreatorRegistrationType extends AbstractType
             ])
             ->add('creatorInfo', CreatorInfoType::class, [
                 'label' => false,
+                'registration_form' => true,
             ])
         ;
     }

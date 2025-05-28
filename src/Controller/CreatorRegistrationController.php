@@ -56,7 +56,7 @@ class CreatorRegistrationController extends AbstractController
             $security->login($user);
 
             // Rediriger vers son profil créateur
-            return $this->redirectToRoute('creator_show', ['id' => $user->getId()]);
+            return $this->redirectToRoute('app_profile_show', ['username' => $user->getUserIdentifier()]);
         }
 
         return $this->render('creator/register.html.twig', [
