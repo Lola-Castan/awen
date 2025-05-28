@@ -177,6 +177,31 @@ class CreatorDashboardController extends AbstractController
 		return $this->redirectToRoute('app_creator_product_images', ['id' => $product->getId()]);
 	}
 	
+	#[Route('/product/{id}/image/{imageId}/position', name: 'app_creator_product_image_position')]
+	public function updateImagePosition(Product $product, int $imageId, Request $request, EntityManagerInterface $entityManager): Response
+	{
+		// Vérifier que le produit appartient bien au créateur connecté
+		if ($product->getCreator() !== $this->getUser()) {
+			throw $this->createAccessDeniedException('Vous n\'êtes pas autorisé à modifier ce produit.');
+		}
+		
+		$image = $entityManager->getRepository(Image::class)->find($imageId);
+		
+		if (!$image) {
+			throw $this->createNotFoundException('L\'image n\'existe pas.');
+		}
+		
+		$position = $request->request->get('position');
+		if ($position !== null) {
+			$image->setPosition((int) $position);
+			$entityManager->flush();
+			
+			$this->addFlash('success', 'La position de l\'image a été mise à jour avec succès.');
+		}
+		
+		return $this->redirectToRoute('app_creator_product_images', ['id' => $product->getId()]);
+	}
+	
 	#[Route('/product/{id}/status/{status}', name: 'app_creator_product_status')]
 	public function changeProductStatus(Product $product, string $status, EntityManagerInterface $entityManager): Response
 	{

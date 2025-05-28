@@ -52,8 +52,8 @@
                         <div class="relative rounded-lg overflow-hidden shadow-sm border border-gray-200 group">
                             <div class="relative pb-3/4">
                                 <img src="{{ asset('uploads/images/' ~ image.filename) }}" 
-                                     alt="{{ image.alt|default(product.name) }}" 
-                                     class="absolute h-full w-full object-cover">
+									alt="{{ image.alt|default(product.name) }}" 
+									class="h-full w-full object-cover">
                             </div>
                             <div class="p-3 bg-white">
                                 <p class="text-sm font-medium text-gray-900 truncate">
@@ -67,7 +67,14 @@
                                         </span>
                                     {% endif %}
                                 </p>
-                                <div class="mt-2 flex justify-end">
+                                <div class="mt-2 flex items-center justify-between">
+                                    <form action="{{ path('app_creator_product_image_position', {'id': product.id, 'imageId': image.id}) }}" method="POST" class="flex items-center space-x-2">
+                                        <input type="number" name="position" value="{{ image.position }}" min="0" 
+                                            class="w-16 py-1 px-2 text-xs border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500">
+                                        <button type="submit" class="text-xs bg-indigo-100 text-indigo-700 px-2 py-1 rounded-md hover:bg-indigo-200">
+                                            Modifier
+                                        </button>
+                                    </form>
                                     <a href="{{ path('app_creator_product_image_remove', {'id': product.id, 'imageId': image.id}) }}" 
                                        class="text-red-600 hover:text-red-900 text-xs"
                                        onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette image ?')">
