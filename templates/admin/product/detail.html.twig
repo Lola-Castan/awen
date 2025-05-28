@@ -1,0 +1,75 @@
+{% extends '@EasyAdmin/crud/detail.html.twig' %}
+
+{% block detail_contents %}
+    {{ parent() }}
+    
+    <div class="field-group">
+        <div class="d-flex align-items-center justify-content-between">
+            <h3>Galerie d'images</h3>
+            <a href="{{ ea_url()
+                .setController('App\\Controller\\Admin\\ImageCrudController')
+                .setAction('new') }}" 
+                class="btn btn-success btn-sm">
+                <i class="fa fa-plus"></i> Ajouter une image
+            </a>
+        </div>
+        
+        {% if entity.instance.images|length > 0 %}
+            <div class="row mt-3">
+                {% for image in entity.instance.images %}
+                    <div class="col-md-3 mb-4">
+                        <div class="card">
+                            <img src="{{ asset('uploads/images/' ~ image.filename) }}" 
+                                 alt="{{ image.alt|default(entity.instance.name) }}"
+                                 class="card-img-top" style="height: 150px; object-fit: cover;">
+                            <div class="card-body p-2">
+                                {% if image.title %}
+                                    <p class="card-text font-weight-bold mb-1">{{ image.title }}</p>
+                                {% endif %}
+                                <div class="d-flex align-items-center mb-2">
+                                    <small class="text-muted mr-2">Position: {{ image.position }}</small>
+                                    {% if image.position == 0 %}
+                                        <span class="badge badge-primary">Image principale</span>
+                                    {% endif %}
+                                </div>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a href="{{ ea_url()
+                                        .setController('App\\Controller\\Admin\\ImageCrudController')
+                                        .setAction('detail')
+                                        .setEntityId(image.id) }}" 
+                                        class="btn btn-info" 
+                                        title="Voir le détail">
+                                        <i class="fa fa-eye"></i>
+                                    </a>
+                                    <a href="{{ ea_url()
+                                        .setController('App\\Controller\\Admin\\ImageCrudController')
+                                        .setAction('edit')
+                                        .setEntityId(image.id) }}" 
+                                        class="btn btn-primary" 
+                                        title="Modifier l'image">
+                                        <i class="fa fa-edit"></i>
+                                    </a>
+                                    <form method="post" 
+                                          action="{{ ea_url()
+                                            .setController('App\\Controller\\Admin\\ImageCrudController')
+                                            .setAction('delete')
+                                            .setEntityId(image.id) }}"
+                                          onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette image ?')"
+                                          style="display: inline-block;">
+                                        <input type="hidden" name="_csrf_token" value="{{ csrf_token('ea-delete-' ~ image.id) }}">
+                                        <button type="submit" class="btn btn-danger" title="Supprimer l'image">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>                {% endfor %}
+            </div>
+        {% else %}
+            <div class="mt-3">
+                <p class="text-gray-500">Aucune image associée à ce produit.</p>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

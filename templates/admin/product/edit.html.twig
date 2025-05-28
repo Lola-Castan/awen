@@ -1,0 +1,72 @@
+{% extends '@EasyAdmin/crud/edit.html.twig' %}
+
+{% block main %}
+	{% if entity.instance.images|length > 0 %}
+		<div class="existing-images-container field-group mb-4">
+			<div class="d-flex align-items-center justify-content-between mb-2">
+				<h3 class="mb-0">Images associées ({{ entity.instance.images|length }})</h3>
+				<a href="{{ ea_url()
+					.setController('App\\Controller\\Admin\\ImageCrudController')
+					.setAction('new') }}" 
+					class="btn btn-sm btn-success">
+					<i class="fa fa-plus"></i> Ajouter une image
+				</a>
+			</div>
+			
+			<div class="existing-images-grid">
+				<div class="row">
+					{% for image in entity.instance.images %}
+						<div class="col-md-3 mb-3">
+							<div class="card">
+								<img src="{{ asset('uploads/images/' ~ image.filename) }}" 
+									class="card-img-top" 
+									alt="{{ image.alt|default(entity.instance.name) }}"
+									style="height: 150px; object-fit: cover;">
+								<div class="card-body p-2">
+									<p class="card-text small">
+										{% if image.title %}{{ image.title }}<br>{% endif %}
+										<small class="text-muted">Position: {{ image.position }}</small>
+										{% if image.position == 0 %}
+											<span class="badge badge-primary">Principale</span>
+										{% endif %}
+									</p>
+									<div class="d-flex justify-content-between mt-2">
+										<a href="{{ ea_url()
+											.setController('App\\Controller\\Admin\\ImageCrudController')
+											.setAction('detail')
+											.setEntityId(image.id) }}" 
+											class="btn btn-sm btn-info" 
+											title="Voir le détail">
+											<i class="fa fa-eye"></i>
+										</a>
+										<a href="{{ ea_url()
+											.setController('App\\Controller\\Admin\\ImageCrudController')
+											.setAction('edit')
+											.setEntityId(image.id) }}" 
+											class="btn btn-sm btn-primary" 
+											title="Modifier l'image">
+											<i class="fa fa-edit"></i>
+										</a>
+										<form method="post" 
+											  action="{{ ea_url()
+												.setController('App\\Controller\\Admin\\ImageCrudController')
+												.setAction('delete')
+												.setEntityId(image.id) }}"
+											  onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette image ?')">
+											<input type="hidden" name="_csrf_token" value="{{ csrf_token('ea-delete-' ~ image.id) }}">
+											<button type="submit" class="btn btn-sm btn-danger" title="Supprimer l'image">
+												<i class="fa fa-trash"></i>
+											</button>
+										</form>
+									</div>
+								</div>
+							</div>
+						</div>
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+	{% endif %}
+	
+	{{ parent() }}
+{% endblock %}

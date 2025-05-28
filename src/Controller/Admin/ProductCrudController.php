@@ -16,6 +16,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\BooleanField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ChoiceField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
@@ -25,9 +26,7 @@ class ProductCrudController extends AbstractCrudController
 	public static function getEntityFqcn(): string
 	{
 		return Product::class;
-	}
-
-	public function configureCrud(Crud $crud): Crud
+	}	public function configureCrud(Crud $crud): Crud
 	{
 		return $crud
 			->setEntityLabelInSingular('Produit')
@@ -36,13 +35,22 @@ class ProductCrudController extends AbstractCrudController
 			->setPageTitle('index', 'Liste des produits')
 			->setPageTitle('new', 'Créer un produit')
 			->setPageTitle('edit', fn (Product $product) => sprintf('Modifier %s', $product->getName()))
-			->setPageTitle('detail', fn (Product $product) => $product->getName());
-	}
-
-	public function configureFields(string $pageName): iterable
+			->setPageTitle('detail', fn (Product $product) => $product->getName())
+			->overrideTemplate('crud/detail', 'admin/product/detail.html.twig')
+			->overrideTemplate('crud/edit', 'admin/product/edit.html.twig');
+	}	public function configureFields(string $pageName): iterable
 	{
 		yield IdField::new('id')->hideOnForm();
 		yield TextField::new('name', 'Nom');
+		
+		// Afficher l'image principale du produit dans la liste
+		if ($pageName === Crud::PAGE_INDEX || $pageName === Crud::PAGE_DETAIL) {
+			yield ImageField::new('mainImage.filename', 'Image')
+				->setBasePath('/uploads/images/')
+				->setTemplatePath('admin/product/_product_image.html.twig')
+				->onlyOnIndex();
+		}
+		
 		yield TextField::new('shortDescription', 'Description courte')->hideOnIndex();
 		yield TextEditorField::new('longDescription', 'Description détaillée')->hideOnIndex();
 		yield NumberField::new('stock', 'Stock');

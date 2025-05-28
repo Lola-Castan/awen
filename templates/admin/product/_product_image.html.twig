@@ -1,0 +1,8 @@
+{# templates/admin/product/_product_image.html.twig #}
+{% if field.value %}
+    <img src="{{ asset('uploads/images/' ~ field.value) }}" class="img-fluid rounded" style="max-height: 50px; max-width: 100px;" alt="{{ field.value }}">
+{% else %}
+    <div class="d-flex align-items-center justify-content-center bg-light rounded" style="height: 50px; width: 100px;">
+        <span class="text-muted small">Pas d'image</span>
+    </div>
+{% endif %}
