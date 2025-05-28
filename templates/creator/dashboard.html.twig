@@ -17,12 +17,19 @@
 					<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
 						<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
 					</svg>
-				</div>
-				<h2 class="text-xl font-semibold text-gray-800 mb-2">Mes Produits</h2>
+				</div>				<h2 class="text-xl font-semibold text-gray-800 mb-2">Mes Produits</h2>
 				<p class="text-gray-600 mb-4">Gérez vos produits, ajoutez-en de nouveaux ou modifiez les existants.</p>
-				<a href="{{ path('app_creator_show', {'id': app.user.id, 'tab': 'products'}) }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-					Accéder
-				</a>
+				<div class="flex space-x-2">
+					<a href="{{ path('app_creator_products') }}" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+						Accéder
+					</a>
+					<a href="{{ path('app_creator_product_new') }}" class="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md shadow-sm text-indigo-600 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+						<svg xmlns="http://www.w3.org/2000/svg" class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+						</svg>
+						Ajouter
+					</a>
+				</div>
 			</div>
 		</div>
 		

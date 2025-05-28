@@ -1,0 +1,122 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter un nouveau produit{% endblock %}
+
+{% block body %}
+<div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">Ajouter un nouveau produit</h1>
+        <p class="text-gray-600">Créez votre produit en remplissant le formulaire ci-dessous. Vous pourrez ajouter des images après la création.</p>
+    </div>
+    
+    {% for flash_error in app.flashes('error') %}
+        <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6" role="alert">
+            <p>{{ flash_error }}</p>
+        </div>
+    {% endfor %}
+
+    <div class="bg-white shadow-md rounded-lg p-6 mb-6">
+        {{ form_start(form, {'attr': {'class': 'space-y-6'}}) }}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="md:col-span-2">
+                    {{ form_label(form.name, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                    {{ form_widget(form.name, {'attr': {'class': 'block w-full rounded-md border-gray-300 shadow-sm focus:ring-primary focus:border-primary sm:text-sm'}}) }}
+                    {{ form_errors(form.name, {'attr': {'class': 'text-red-500 text-xs mt-1'}}) }}
+                </div>
+                
+                <div class="md:col-span-2">
+                    {{ form_label(form.shortDescription, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                    {{ form_widget(form.shortDescription, {'attr': {'class': 'block w-full rounded-md border-gray-300 shadow-sm focus:ring-primary focus:border-primary sm:text-sm', 'rows': 2}}) }}
+                    {{ form_errors(form.shortDescription, {'attr': {'class': 'text-red-500 text-xs mt-1'}}) }}
+                </div>
+                
+                <div class="md:col-span-2">
+                    {{ form_label(form.longDescription, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                    {{ form_widget(form.longDescription, {'attr': {'class': 'block w-full rounded-md border-gray-300 shadow-sm focus:ring-primary focus:border-primary sm:text-sm', 'rows': 6}}) }}
+                    {{ form_errors(form.longDescription, {'attr': {'class': 'text-red-500 text-xs mt-1'}}) }}
+                </div>
+                
+                <div>
+                    {{ form_label(form.price, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                    {{ form_widget(form.price, {'attr': {'class': 'block w-full rounded-md border-gray-300 shadow-sm focus:ring-primary focus:border-primary sm:text-sm'}}) }}
+                    {{ form_errors(form.price, {'attr': {'class': 'text-red-500 text-xs mt-1'}}) }}
+                </div>
+                
+                <div>
+                    {{ form_label(form.stock, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                    {{ form_widget(form.stock, {'attr': {'class': 'block w-full rounded-md border-gray-300 shadow-sm focus:ring-primary focus:border-primary sm:text-sm'}}) }}
+                    {{ form_errors(form.stock, {'attr': {'class': 'text-red-500 text-xs mt-1'}}) }}
+                </div>
+                
+                <div>
+                    {{ form_label(form.weight, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                    {{ form_widget(form.weight, {'attr': {'class': 'block w-full rounded-md border-gray-300 shadow-sm focus:ring-primary focus:border-primary sm:text-sm'}}) }}
+                    {{ form_errors(form.weight, {'attr': {'class': 'text-red-500 text-xs mt-1'}}) }}
+                </div>
+                
+                <div>
+                    {{ form_label(form.width, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                    {{ form_widget(form.width, {'attr': {'class': 'block w-full rounded-md border-gray-300 shadow-sm focus:ring-primary focus:border-primary sm:text-sm'}}) }}
+                    {{ form_errors(form.width, {'attr': {'class': 'text-red-500 text-xs mt-1'}}) }}
+                </div>
+                
+                <div>
+                    {{ form_label(form.height, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                    {{ form_widget(form.height, {'attr': {'class': 'block w-full rounded-md border-gray-300 shadow-sm focus:ring-primary focus:border-primary sm:text-sm'}}) }}
+                    {{ form_errors(form.height, {'attr': {'class': 'text-red-500 text-xs mt-1'}}) }}
+                </div>
+                
+                <div>
+                    {{ form_label(form.depth, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 mb-1'}}) }}
+                    {{ form_widget(form.depth, {'attr': {'class': 'block w-full rounded-md border-gray-300 shadow-sm focus:ring-primary focus:border-primary sm:text-sm'}}) }}
+                    {{ form_errors(form.depth, {'attr': {'class': 'text-red-500 text-xs mt-1'}}) }}
+                </div>
+                
+                <div class="md:col-span-2">
+                    <div class="flex items-start">
+                        <div class="flex items-center h-5">
+                            {{ form_widget(form.showcaseProduct, {'attr': {'class': 'h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded'}}) }}
+                        </div>
+                        <div class="ml-3 text-sm">
+                            {{ form_label(form.showcaseProduct, null, {'label_attr': {'class': 'font-medium text-gray-700'}}) }}
+                            <p class="text-gray-500">Ce produit apparaîtra en priorité sur votre page créateur</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="md:col-span-2">
+                    <fieldset>
+                        <legend class="block text-sm font-medium text-gray-700 mb-2">{{ form_label(form.categories) }}</legend>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+                            {% for choice in form.categories %}
+                                <div class="flex items-start">
+                                    <div class="flex items-center h-5">
+                                        {{ form_widget(choice, {'attr': {'class': 'h-4 w-4 text-primary focus:ring-primary border-gray-300 rounded'}}) }}
+                                    </div>
+                                    <div class="ml-3 text-sm">
+                                        {{ form_label(choice, null, {'label_attr': {'class': 'font-medium text-gray-700'}}) }}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        {{ form_errors(form.categories, {'attr': {'class': 'text-red-500 text-xs mt-1'}}) }}
+                    </fieldset>
+                </div>
+            </div>
+            
+            <div class="flex justify-end space-x-3 pt-6 border-t border-gray-200">
+                <a href="{{ path('app_creator_dashboard') }}" class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Annuler
+                </a>
+                <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Créer le produit
+                </button>
+            </div>
+        {{ form_end(form) }}
+    </div>
+    
+    <div class="text-center text-sm text-gray-500">
+        <p>Après la création de votre produit, vous pourrez y ajouter des images dans l'étape suivante.</p>
+    </div>
+</div>
+{% endblock %}
