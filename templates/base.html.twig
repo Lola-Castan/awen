@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>{% block title %}Welcome!{% endblock %}</title>
         <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+        <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Open+Sans&display=swap" rel="stylesheet">
         
         {% block stylesheets %}
             <!-- CDN essentiels -->
@@ -22,11 +23,44 @@
                             colors: {
                                 primary: '#4F46E5',
                                 secondary: '#10B981'
+                            },
+                            fontFamily: {
+                                'nunito': ['Nunito', 'sans-serif'],
+                                'opensans': ['Open Sans', 'sans-serif'],
+                            },
+                            fontSize: {
+                                'h1': '32px',
+                                'h2': '28px',
+                                'h3': '24px',
+                                'h4': '20px',
+                                'body': '12px',
+                                'cta': '20px',
                             }
                         }
                     }
                 };
             </script>
+
+            <!-- Styles de base -->
+            <style type="text/tailwindcss">
+                @layer base {
+                    h1 {
+                        @apply font-nunito font-bold;
+                    }
+                    h2 {
+                        @apply font-nunito font-bold;
+                    }
+                    h3 {
+                        @apply font-nunito font-bold;
+                    }
+                    h4 {
+                        @apply font-nunito font-semibold;
+                    }
+                    body {
+                        @apply font-opensans bg-gray-50;
+                    }
+                }
+            </style>
         {% endblock %}
 
         {% block javascripts %}
