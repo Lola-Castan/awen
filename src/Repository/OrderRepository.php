@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Order;
+use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -37,5 +38,20 @@ class OrderRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    /**
+     * Trouve toutes les commandes contenant des produits d'un créateur
+     */
+    public function findByCreator(User $creator): array
+    {
+        return $this->createQueryBuilder('o')
+            ->join('o.orderDetails', 'od')
+            ->join('od.product', 'p')
+            ->where('p.creator = :creator')
+            ->setParameter('creator', $creator)
+            ->orderBy('o.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
     }
 } 

@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Product;
 use App\Entity\Image;
+use App\Entity\Order;
 use App\Enum\ProductStatus;
 use App\Form\CreatorProductType;
 use App\Form\ProductImageType;
@@ -230,4 +231,15 @@ class CreatorDashboardController extends AbstractController
 		
 		$this->addFlash('success', sprintf('Votre produit a été %s avec succès !', $statusMessages[$status]));
 		return $this->redirectToRoute('app_creator_products');	}
+	
+	#[Route('/orders', name: 'app_creator_dashboard_orders')]
+	public function orders(EntityManagerInterface $entityManager): Response
+	{
+		// Récupérer toutes les commandes contenant des produits du créateur
+		$orders = $entityManager->getRepository(Order::class)->findByCreator($this->getUser());
+		
+		return $this->render('creator/orders.html.twig', [
+			'orders' => $orders
+		]);
+	}
 }
