@@ -147,18 +147,17 @@
                                     {{ product.createdAt|date('d/m/Y') }}
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                    <div class="flex space-x-2 justify-end">
-                                        {% if product.status.value == 'published' %}
+                                    <div class="flex space-x-2 justify-end">                                        {% if product.status.value == 'published' %}
                                             <a href="{{ path('app_product_show', {'id': product.id}) }}" class="text-indigo-600 hover:text-indigo-900">Voir</a>
                                         {% endif %}
-                                        <a href="#" class="text-gray-600 hover:text-gray-900">Modifier</a>
-                                        <a href="#" class="text-gray-600 hover:text-gray-900">Images</a>
+                                        <a href="{{ path('app_creator_product_edit', {'id': product.id}) }}" class="text-gray-600 hover:text-gray-900">Modifier</a>
+                                        <a href="{{ path('app_creator_product_images', {'id': product.id}) }}" class="text-gray-600 hover:text-gray-900">Images</a>
                                         {% if product.status.value == 'draft' %}
-                                            <a href="#" class="text-green-600 hover:text-green-900">Publier</a>
+                                            <a href="{{ path('app_creator_product_status', {'id': product.id, 'status': 'publish'}) }}" class="text-green-600 hover:text-green-900">Publier</a>
                                         {% elseif product.status.value == 'published' %}
-                                            <a href="#" class="text-yellow-600 hover:text-yellow-900">Dépublier</a>
+                                            <a href="{{ path('app_creator_product_status', {'id': product.id, 'status': 'draft'}) }}" class="text-yellow-600 hover:text-yellow-900">Dépublier</a>
                                         {% else %}
-                                            <a href="#" class="text-green-600 hover:text-green-900">Restaurer</a>
+                                            <a href="{{ path('app_creator_product_status', {'id': product.id, 'status': 'draft'}) }}" class="text-green-600 hover:text-green-900">Restaurer</a>
                                         {% endif %}
                                     </div>
                                 </td>
@@ -229,11 +228,10 @@
                                         {{ product.createdAt|date('d/m/Y') }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <div class="flex space-x-2 justify-end">
-                                            <a href="{{ path('app_product_show', {'id': product.id}) }}" class="text-indigo-600 hover:text-indigo-900">Voir</a>
-                                            <a href="#" class="text-gray-600 hover:text-gray-900">Modifier</a>
-                                            <a href="#" class="text-gray-600 hover:text-gray-900">Images</a>
-                                            <a href="#" class="text-yellow-600 hover:text-yellow-900">Dépublier</a>
+                                        <div class="flex space-x-2 justify-end">                                            <a href="{{ path('app_product_show', {'id': product.id}) }}" class="text-indigo-600 hover:text-indigo-900">Voir</a>
+                                            <a href="{{ path('app_creator_product_edit', {'id': product.id}) }}" class="text-gray-600 hover:text-gray-900">Modifier</a>
+                                            <a href="{{ path('app_creator_product_images', {'id': product.id}) }}" class="text-gray-600 hover:text-gray-900">Images</a>
+                                            <a href="{{ path('app_creator_product_status', {'id': product.id, 'status': 'draft'}) }}" class="text-yellow-600 hover:text-yellow-900">Dépublier</a>
                                         </div>
                                     </td>
                                 </tr>
@@ -308,10 +306,9 @@
                                         {{ product.createdAt|date('d/m/Y') }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <div class="flex space-x-2 justify-end">
-                                            <a href="#" class="text-gray-600 hover:text-gray-900">Modifier</a>
-                                            <a href="#" class="text-gray-600 hover:text-gray-900">Images</a>
-                                            <a href="#" class="text-green-600 hover:text-green-900">Publier</a>
+                                        <div class="flex space-x-2 justify-end">                                            <a href="{{ path('app_creator_product_edit', {'id': product.id}) }}" class="text-gray-600 hover:text-gray-900">Modifier</a>
+                                            <a href="{{ path('app_creator_product_images', {'id': product.id}) }}" class="text-gray-600 hover:text-gray-900">Images</a>
+                                            <a href="{{ path('app_creator_product_status', {'id': product.id, 'status': 'publish'}) }}" class="text-green-600 hover:text-green-900">Publier</a>
                                         </div>
                                     </td>
                                 </tr>
@@ -386,10 +383,9 @@
                                         {{ product.createdAt|date('d/m/Y') }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <div class="flex space-x-2 justify-end">
-                                            <a href="#" class="text-gray-600 hover:text-gray-900">Modifier</a>
-                                            <a href="#" class="text-gray-600 hover:text-gray-900">Images</a>
-                                            <a href="#" class="text-green-600 hover:text-green-900">Restaurer</a>
+                                        <div class="flex space-x-2 justify-end">                                            <a href="{{ path('app_creator_product_edit', {'id': product.id}) }}" class="text-gray-600 hover:text-gray-900">Modifier</a>
+                                            <a href="{{ path('app_creator_product_images', {'id': product.id}) }}" class="text-gray-600 hover:text-gray-900">Images</a>
+                                            <a href="{{ path('app_creator_product_status', {'id': product.id, 'status': 'draft'}) }}" class="text-green-600 hover:text-green-900">Restaurer</a>
                                         </div>
                                     </td>
                                 </tr>

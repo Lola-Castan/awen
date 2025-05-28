@@ -1,0 +1,211 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier un produit | Espace Créateur{% endblock %}
+
+{% block body %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">Modifier votre produit</h1>
+        <div class="mt-2 flex items-center">
+            <a href="{{ path('app_creator_products') }}" class="text-sm text-indigo-600 hover:text-indigo-900 flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                    <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                </svg>
+                Retour à la liste
+            </a>
+        </div>
+    </div>
+
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="mb-6 p-4 rounded-md 
+                {% if label == 'success' %}bg-green-50 text-green-800 border border-green-200
+                {% elseif label == 'error' %}bg-red-50 text-red-800 border border-red-200
+                {% else %}bg-blue-50 text-blue-800 border border-blue-200{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+        <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h3 class="text-lg leading-6 font-medium text-gray-900">Informations du produit</h3>
+                    <p class="mt-1 max-w-2xl text-sm text-gray-500">
+                        Modifiez les détails de votre produit
+                    </p>
+                </div>
+                <div class="flex space-x-3">
+                    <a href="{{ path('app_creator_product_images', {'id': product.id}) }}" class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="-ml-1 mr-2 h-5 w-5 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
+                        </svg>
+                        Gérer les images
+                    </a>
+                    {% if product.status.value == 'draft' %}
+                        <a href="{{ path('app_creator_product_status', {'id': product.id, 'status': 'publish'}) }}" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="-ml-1 mr-2 h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+                            </svg>
+                            Publier
+                        </a>
+                    {% elseif product.status.value == 'published' %}
+                        <div class="inline-flex rounded-md shadow-sm">
+                            <a href="{{ path('app_creator_product_status', {'id': product.id, 'status': 'draft'}) }}" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-l-md shadow-sm text-white bg-yellow-600 hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="-ml-1 mr-2 h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                                </svg>
+                                Passer en brouillon
+                            </a>
+                            <a href="{{ path('app_creator_product_status', {'id': product.id, 'status': 'archive'}) }}" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-r-md shadow-sm text-white bg-gray-600 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="-ml-1 mr-2 h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M4 3a2 2 0 100 4h12a2 2 0 100-4H4z" />
+                                    <path fill-rule="evenodd" d="M3 8h14v7a2 2 0 01-2 2H5a2 2 0 01-2-2V8zm5 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" clip-rule="evenodd" />
+                                </svg>
+                                Archiver
+                            </a>
+                        </div>
+                    {% elseif product.status.value == 'archived' %}
+                        <a href="{{ path('app_creator_product_status', {'id': product.id, 'status': 'draft'}) }}" class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="-ml-1 mr-2 h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M4 3a2 2 0 100 4h12a2 2 0 100-4H4z" />
+                                <path fill-rule="evenodd" d="M3 8h14v7a2 2 0 01-2 2H5a2 2 0 01-2-2V8zm5 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" clip-rule="evenodd" />
+                            </svg>
+                            Restaurer
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="px-4 py-5 sm:p-6">
+            {{ form_start(form, {'attr': {'class': 'space-y-8 divide-y divide-gray-200'}}) }}
+                <div class="space-y-6 sm:space-y-5">
+                    <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:pt-5">
+                        {{ form_label(form.name, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2'}}) }}
+                        <div class="mt-1 sm:mt-0 sm:col-span-2">
+                            {{ form_widget(form.name, {'attr': {'class': 'max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md'}}) }}
+                            {{ form_errors(form.name, {'attr': {'class': 'text-red-500 text-sm mt-1'}}) }}
+                        </div>
+                    </div>
+
+                    <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                        {{ form_label(form.shortDescription, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2'}}) }}
+                        <div class="mt-1 sm:mt-0 sm:col-span-2">
+                            {{ form_widget(form.shortDescription, {'attr': {'class': 'max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300 rounded-md'}}) }}
+                            {{ form_errors(form.shortDescription, {'attr': {'class': 'text-red-500 text-sm mt-1'}}) }}
+                        </div>
+                    </div>
+
+                    <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                        {{ form_label(form.longDescription, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2'}}) }}
+                        <div class="mt-1 sm:mt-0 sm:col-span-2">
+                            {{ form_widget(form.longDescription, {'attr': {'class': 'max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300 rounded-md', 'rows': 6}}) }}
+                            {{ form_errors(form.longDescription, {'attr': {'class': 'text-red-500 text-sm mt-1'}}) }}
+                        </div>
+                    </div>
+
+                    <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                        {{ form_label(form.price, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2'}}) }}
+                        <div class="mt-1 sm:mt-0 sm:col-span-2">
+                            {{ form_widget(form.price, {'attr': {'class': 'max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md'}}) }}
+                            {{ form_errors(form.price, {'attr': {'class': 'text-red-500 text-sm mt-1'}}) }}
+                        </div>
+                    </div>
+
+                    <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                        {{ form_label(form.stock, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2'}}) }}
+                        <div class="mt-1 sm:mt-0 sm:col-span-2">
+                            {{ form_widget(form.stock, {'attr': {'class': 'max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md'}}) }}
+                            {{ form_errors(form.stock, {'attr': {'class': 'text-red-500 text-sm mt-1'}}) }}
+                        </div>
+                    </div>
+
+                    <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                        {{ form_label(form.weight, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2'}}) }}
+                        <div class="mt-1 sm:mt-0 sm:col-span-2">
+                            {{ form_widget(form.weight, {'attr': {'class': 'max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:max-w-xs sm:text-sm border-gray-300 rounded-md'}}) }}
+                            {{ form_errors(form.weight, {'attr': {'class': 'text-red-500 text-sm mt-1'}}) }}
+                            <p class="mt-2 text-sm text-gray-500">Poids en grammes (facultatif)</p>
+                        </div>
+                    </div>
+
+                    <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                        <label class="block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2">Dimensions</label>
+                        <div class="mt-1 sm:mt-0 sm:col-span-2 grid grid-cols-3 gap-4">
+                            <div>
+                                {{ form_label(form.width, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                                {{ form_widget(form.width, {'attr': {'class': 'max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300 rounded-md'}}) }}
+                                {{ form_errors(form.width, {'attr': {'class': 'text-red-500 text-sm mt-1'}}) }}
+                            </div>
+                            <div>
+                                {{ form_label(form.depth, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                                {{ form_widget(form.depth, {'attr': {'class': 'max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300 rounded-md'}}) }}
+                                {{ form_errors(form.depth, {'attr': {'class': 'text-red-500 text-sm mt-1'}}) }}
+                            </div>
+                            <div>
+                                {{ form_label(form.height, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700'}}) }}
+                                {{ form_widget(form.height, {'attr': {'class': 'max-w-lg block w-full shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300 rounded-md'}}) }}
+                                {{ form_errors(form.height, {'attr': {'class': 'text-red-500 text-sm mt-1'}}) }}
+                            </div>
+                            <p class="col-span-3 text-sm text-gray-500">Dimensions en millimètres (facultatif)</p>
+                        </div>
+                    </div>
+
+                    <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                        <div class="col-span-3">
+                            <div class="bg-gray-50 p-4 rounded-md">
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0">
+                                        <svg class="h-5 w-5 text-yellow-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                                        </svg>
+                                    </div>
+                                    <div class="ml-3">
+                                        <h3 class="text-sm font-medium text-gray-800">Paramètres de mise en avant</h3>
+                                        <div class="mt-2">
+                                            <div class="flex items-center">
+                                                {{ form_widget(form.showcaseProduct, {'attr': {'class': 'h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded'}}) }}
+                                                {{ form_label(form.showcaseProduct, null, {'label_attr': {'class': 'ml-2 block text-sm text-gray-700'}}) }}
+                                            </div>
+                                            <p class="text-gray-500 text-sm mt-1">Les produits mis en avant apparaîtront en priorité sur la page d'accueil et dans les résultats de recherche.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="sm:grid sm:grid-cols-3 sm:gap-4 sm:items-start sm:border-t sm:border-gray-200 sm:pt-5">
+                        {{ form_label(form.categories, null, {'label_attr': {'class': 'block text-sm font-medium text-gray-700 sm:mt-px sm:pt-2'}}) }}
+                        <div class="mt-1 sm:mt-0 sm:col-span-2">
+                            <div class="grid grid-cols-2 gap-4">
+                                {{ form_widget(form.categories, {'attr': {'class': 'block focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm border-gray-300 rounded-md'}}) }}
+                            </div>
+                            {{ form_errors(form.categories, {'attr': {'class': 'text-red-500 text-sm mt-1'}}) }}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pt-6 sm:pt-5">
+                    <div class="flex justify-end">
+                        <a href="{{ path('app_creator_products') }}" class="py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            Annuler
+                        </a>
+                        <button type="submit" class="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            Enregistrer les modifications
+                        </button>
+                    </div>
+                </div>
+            {{ form_end(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ parent() }}
+<script>
+    // Script pour gérer la validation du formulaire côté client si nécessaire
+</script>
+{% endblock %}
