@@ -17,41 +17,44 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class OrderRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
-        parent::__construct($registry, Order::class);
+  public function __construct(ManagerRegistry $registry)
+  {
+    parent::__construct($registry, Order::class);
+  }
+
+  public function save(Order $entity, bool $flush = false): void
+  {
+    $this->getEntityManager()->persist($entity);
+
+    if ($flush) {
+      $this->getEntityManager()->flush();
     }
+  }
 
-    public function save(Order $entity, bool $flush = false): void
-    {
-        $this->getEntityManager()->persist($entity);
+  public function remove(Order $entity, bool $flush = false): void
+  {
+    $this->getEntityManager()->remove($entity);
 
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
+    if ($flush) {
+      $this->getEntityManager()->flush();
     }
+  }
 
-    public function remove(Order $entity, bool $flush = false): void
-    {
-        $this->getEntityManager()->remove($entity);
-
-        if ($flush) {
-            $this->getEntityManager()->flush();
-        }
-    }
-
-    /**
-     * Trouve toutes les commandes contenant des produits d'un créateur
-     */
-    public function findByCreator(User $creator): array
-    {
-        return $this->createQueryBuilder('o')
-            ->join('o.orderDetails', 'od')
-            ->join('od.product', 'p')
-            ->where('p.creator = :creator')
-            ->setParameter('creator', $creator)
-            ->orderBy('o.createdAt', 'DESC')
-            ->getQuery()
-            ->getResult();
-    }
-} 
+  /**
+   * Used in creator dashboard to display orders containing one or more products from the connected creator
+   *
+   * @param User $creator The creator user to find orders for
+   * @return array Array of Order objects containing creator's products
+   */
+  public function findByCreator(User $creator): array
+  {
+    return $this->createQueryBuilder('o')
+      ->join('o.orderDetails', 'od')
+      ->join('od.product', 'p')
+      ->where('p.creator = :creator')
+      ->setParameter('creator', $creator)
+      ->orderBy('o.createdAt', 'DESC')
+      ->getQuery()
+      ->getResult();
+  }
+}

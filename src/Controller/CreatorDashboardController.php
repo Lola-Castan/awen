@@ -28,31 +28,26 @@ class CreatorDashboardController extends AbstractController
 			'user' => $this->getUser(),
 		]);
 	}
-	
+
+	/**
+	 * Used in the creator's dashboard to show their products sorted by status (draft, published, archived).
+	 *
+	 * @param EntityManagerInterface $entityManager The entity manager instance used for database operations
+	 * 
+	 * @return Response Returns a rendered view with products grouped by status and total count
+	 */
 	#[Route('/products', name: 'app_creator_products')]
 	public function products(EntityManagerInterface $entityManager): Response
 	{
-		// Récupérer tous les produits du créateur connecté, quel que soit leur statut
-		$products = $entityManager->getRepository(Product::class)->findBy(
-			['creator' => $this->getUser()],
-			['createdAt' => 'DESC']
-		);
+		// Use a custom repository method to get products grouped by status
+		$productsByStatus = $entityManager->getRepository(Product::class)->findByCreatorGroupedByStatus($this->getUser());
 		
-		// Organiser les produits par statut
-		$productsByStatus = [
-			'published' => [],
-			'draft' => [],
-			'archived' => []
-		];
-		
-		foreach ($products as $product) {
-			$status = $product->getStatus()->value;
-			$productsByStatus[$status][] = $product;
-		}
+		// Calculate total number of products across all statuses
+		$totalProducts = array_sum(array_map('count', $productsByStatus));
 		
 		return $this->render('creator/products.html.twig', [
 			'productsByStatus' => $productsByStatus,
-			'totalProducts' => count($products)
+			'totalProducts' => $totalProducts
 		]);
 	}
 	

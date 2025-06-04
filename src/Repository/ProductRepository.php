@@ -13,93 +13,123 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
  */
 class ProductRepository extends ServiceEntityRepository
 {
-    public function __construct(ManagerRegistry $registry)
-    {
-        parent::__construct($registry, Product::class);
-    }
-    
-    /**
-     * Trouve tous les produits publiés avec options de tri et filtrage par catégorie
-     * @param Category|null $category La catégorie pour filtrer les produits
-     * @param string $sort Le critère de tri ('newest', 'price_asc', 'price_desc', 'name_asc', 'name_desc')
-     * @return Product[] Returns an array of published Product objects
-     */
-    public function findSortedPublishedProducts(?Category $category = null, string $sort = 'newest'): array
-    {
-        $queryBuilder = $this->createQueryBuilder('p')
-            ->andWhere('p.status = :status')
-            ->setParameter('status', ProductStatus::Published);
+  public function __construct(ManagerRegistry $registry)
+  {
+    parent::__construct($registry, Product::class);
+  }
 
-        if ($category) {
-            $queryBuilder
-                ->innerJoin('p.categories', 'c')
-                ->andWhere('c.id = :categoryId')
-                ->setParameter('categoryId', $category->getId());
-        }
+  /**
+   * Trouve tous les produits publiés avec options de tri et filtrage par catégorie
+   * @param Category|null $category La catégorie pour filtrer les produits
+   * @param string $sort Le critère de tri ('newest', 'price_asc', 'price_desc', 'name_asc', 'name_desc')
+   * @return Product[] Returns an array of published Product objects
+   */
+  public function findSortedPublishedProducts(?Category $category = null, string $sort = 'newest'): array
+  {
+    $queryBuilder = $this->createQueryBuilder('p')
+      ->andWhere('p.status = :status')
+      ->setParameter('status', ProductStatus::Published);
 
-        // Appliquer le tri
-        switch ($sort) {
-            case 'price_asc':
-                $queryBuilder->orderBy('p.price', 'ASC');
-                break;
-            case 'price_desc':
-                $queryBuilder->orderBy('p.price', 'DESC');
-                break;
-            case 'name_asc':
-                $queryBuilder->orderBy('p.name', 'ASC');
-                break;
-            case 'name_desc':
-                $queryBuilder->orderBy('p.name', 'DESC');
-                break;
-            case 'newest':
-            default:
-                $queryBuilder->orderBy('p.createdAt', 'DESC');
-                break;
-        }
-
-        return $queryBuilder->getQuery()->getResult();
-    }
-    
-    /**
-     * Trouve les produits mis en avant (showcaseProduct = true)
-     * @return Product[] Returns an array of featured Product objects
-     */
-    public function findFeaturedProducts(int $limit = 8): array
-    {
-        return $this->createQueryBuilder('p')
-            ->andWhere('p.status = :status')
-            ->andWhere('p.showcaseProduct = :showcase')
-            ->setParameter('status', ProductStatus::Published)
-            ->setParameter('showcase', true)
-            ->orderBy('p.createdAt', 'DESC')
-            ->setMaxResults($limit)
-            ->getQuery()
-            ->getResult()
-        ;
+    if ($category) {
+      $queryBuilder
+        ->innerJoin('p.categories', 'c')
+        ->andWhere('c.id = :categoryId')
+        ->setParameter('categoryId', $category->getId());
     }
 
-//    /**
-//     * @return Product[] Returns an array of Product objects
-//     */
-//    public function findByExampleField($value): array
-//    {
-//        return $this->createQueryBuilder('p')
-//            ->andWhere('p.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('p.id', 'ASC')
-//            ->setMaxResults(10)
-//            ->getQuery()
-//            ->getResult()
-//        ;
-//    }
+    // Appliquer le tri
+    switch ($sort) {
+      case 'price_asc':
+        $queryBuilder->orderBy('p.price', 'ASC');
+        break;
+      case 'price_desc':
+        $queryBuilder->orderBy('p.price', 'DESC');
+        break;
+      case 'name_asc':
+        $queryBuilder->orderBy('p.name', 'ASC');
+        break;
+      case 'name_desc':
+        $queryBuilder->orderBy('p.name', 'DESC');
+        break;
+      case 'newest':
+      default:
+        $queryBuilder->orderBy('p.createdAt', 'DESC');
+        break;
+    }
 
-//    public function findOneBySomeField($value): ?Product
-//    {
-//        return $this->createQueryBuilder('p')
-//            ->andWhere('p.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
+    return $queryBuilder->getQuery()->getResult();
+  }
+  /**
+   * Trouve les produits mis en avant (showcaseProduct = true)
+   * @return Product[] Returns an array of featured Product objects
+   */
+  public function findFeaturedProducts(int $limit = 8): array
+  {
+    return $this->createQueryBuilder('p')
+      ->andWhere('p.status = :status')
+      ->andWhere('p.showcaseProduct = :showcase')
+      ->setParameter('status', ProductStatus::Published)
+      ->setParameter('showcase', true)
+      ->orderBy('p.createdAt', 'DESC')
+      ->setMaxResults($limit)
+      ->getQuery()
+      ->getResult()
+    ;
+  }
+
+  /**
+	 * Used in the creator's dashboard to get their products sorted by status (draft, published, archived).
+   * @param mixed $creator The creator entity
+   * @return array Returns an array grouped by status containing Product objects
+   */
+  public function findByCreatorGroupedByStatus($creator): array
+  {
+    // Get all products for the creator ordered by creation date
+    $products = $this->createQueryBuilder('p')
+      ->where('p.creator = :creator')
+      ->setParameter('creator', $creator)
+      ->orderBy('p.createdAt', 'DESC')
+      ->getQuery()
+      ->getResult();
+
+    // Initialize the status groups
+    $productsByStatus = [
+      'published' => [],
+      'draft' => [],
+      'archived' => []
+    ];
+
+    // Group products by their status
+    foreach ($products as $product) {
+      $status = $product->getStatus()->value;
+      $productsByStatus[$status][] = $product;
+    }
+
+    return $productsByStatus;
+  }
+
+  //    /**
+  //     * @return Product[] Returns an array of Product objects
+  //     */
+  //    public function findByExampleField($value): array
+  //    {
+  //        return $this->createQueryBuilder('p')
+  //            ->andWhere('p.exampleField = :val')
+  //            ->setParameter('val', $value)
+  //            ->orderBy('p.id', 'ASC')
+  //            ->setMaxResults(10)
+  //            ->getQuery()
+  //            ->getResult()
+  //        ;
+  //    }
+
+  //    public function findOneBySomeField($value): ?Product
+  //    {
+  //        return $this->createQueryBuilder('p')
+  //            ->andWhere('p.exampleField = :val')
+  //            ->setParameter('val', $value)
+  //            ->getQuery()
+  //            ->getOneOrNullResult()
+  //        ;
+  //    }
 }
