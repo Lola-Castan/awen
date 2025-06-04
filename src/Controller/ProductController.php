@@ -16,8 +16,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 #[Route('/products')]
 class ProductController extends AbstractController
-{
-    #[Route('/', name: 'app_product_index')]
+{    #[Route('/', name: 'app_product_index')]
     public function index(Request $request, ProductRepository $productRepository, CategoryRepository $categoryRepository): Response
     {
         $categoryId = $request->query->get('category');
@@ -27,39 +26,8 @@ class ProductController extends AbstractController
         if ($categoryId) {
             $category = $categoryRepository->find($categoryId);
         }
-
-        $queryBuilder = $productRepository->createQueryBuilder('p')
-            ->where('p.status = :status')
-            ->setParameter('status', 'published');
-
-        if ($category) {
-            $queryBuilder
-                ->innerJoin('p.categories', 'c')
-                ->andWhere('c.id = :categoryId')
-                ->setParameter('categoryId', $category->getId());
-        }
-
-        // Appliquer le tri
-        switch ($sort) {
-            case 'price_asc':
-                $queryBuilder->orderBy('p.price', 'ASC');
-                break;
-            case 'price_desc':
-                $queryBuilder->orderBy('p.price', 'DESC');
-                break;
-            case 'name_asc':
-                $queryBuilder->orderBy('p.name', 'ASC');
-                break;
-            case 'name_desc':
-                $queryBuilder->orderBy('p.name', 'DESC');
-                break;
-            case 'newest':
-            default:
-                $queryBuilder->orderBy('p.createdAt', 'DESC');
-                break;
-        }
-
-        $products = $queryBuilder->getQuery()->getResult();
+        
+        $products = $productRepository->findSortedPublishedProducts($category, $sort);
         $categories = $categoryRepository->findAll();
 
         $sortOptions = [
