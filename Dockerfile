@@ -1,7 +1,7 @@
 FROM php:8.3-apache
 
 RUN apt-get update && apt-get install -y libicu-dev libzip-dev unzip git \
-    && docker-php-ext-install intl pdo pdo_mysql zip opcache
+    && docker-php-ext-install intl pdo pdo_mysql zip opcache bcmath
 
 RUN a2enmod rewrite
 
