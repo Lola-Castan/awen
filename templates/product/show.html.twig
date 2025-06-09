@@ -16,27 +16,23 @@
     <div class="bg-white rounded-lg shadow-md overflow-hidden">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 p-6">
             <!-- Galerie d'images -->
-            <div>
+            <div class="relative rounded-lg overflow-hidden">
                 {% if product.images|length > 0 %}
-                    <div class="mb-4">
-                        <div id="main-image" class="h-80 overflow-hidden rounded-lg relative transition-all duration-300">
-                            <img src="{{ product.mainImage.path }}" 
-                                alt="{{ product.mainImage.alt }}" 
-                                class="w-full h-full object-cover transition-opacity duration-150">
-                        </div>
-                    </div>
-                    
-                    {% if product.images|length > 1 %}
-                        <div class="grid grid-cols-5 gap-2">
+                    <div class="swiper swiper-container h-full">
+                        <div class="swiper-wrapper h-full">
                             {% for image in product.images %}
-                                <div class="h-16 w-full overflow-hidden rounded cursor-pointer thumbnail-image" data-src="{{ image.path }}" data-alt="{{ image.alt }}">
+                                <div class="swiper-slide">
                                     <img src="{{ image.path }}" alt="{{ image.alt }}" class="w-full h-full object-cover">
                                 </div>
                             {% endfor %}
                         </div>
-                    {% endif %}
+                        <!-- Nav + Pagination dans le conteneur relatif -->
+                        <div class="swiper-button-prev absolute left-2 top-1/2 transform -translate-y-1/2 z-10 text-white drop-shadow"></div>
+                        <div class="swiper-button-next absolute right-2 top-1/2 transform -translate-y-1/2 z-10 text-white drop-shadow"></div>
+                        <div class="swiper-pagination absolute bottom-2 left-0 right-0 z-10"></div>
+                    </div>
                 {% else %}
-                    <div class="h-80 bg-gray-100 flex items-center justify-center rounded-lg">
+                    <div class="h-full bg-gray-100 flex items-center justify-center">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                         </svg>
@@ -193,5 +189,19 @@
         {% endif %}
     </div>
 </div>
-</div>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script>
+    new Swiper('.swiper-container', {
+        loop: true,
+        pagination: {
+            el: '.swiper-pagination',
+            clickable: true,
+        },
+        navigation: {
+            nextEl: '.swiper-button-next',
+            prevEl: '.swiper-button-prev',
+        },
+    });
+</script>
 {% endblock %}
