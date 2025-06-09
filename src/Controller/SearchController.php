@@ -50,4 +50,26 @@ class SearchController extends AbstractController
             'form' => $form->createView(),
         ]);
     }
-} 
+    
+    public function navbar(): Response
+    {
+        // Formulaire pour desktop
+        $desktopForm = $this->createForm(SearchType::class, null, [
+            'method' => 'GET',
+            'action' => $this->generateUrl('app_search'),
+            'csrf_protection' => false
+        ]);
+
+        // Formulaire pour mobile
+        $mobileForm = $this->createForm(SearchType::class, null, [
+            'method' => 'GET',
+            'action' => $this->generateUrl('app_search'),
+            'csrf_protection' => false
+        ]);
+
+        return $this->render('components/_navbar.html.twig', [
+            'desktopForm' => $desktopForm->createView(),
+            'mobileForm' => $mobileForm->createView(),
+        ]);
+    }
+}

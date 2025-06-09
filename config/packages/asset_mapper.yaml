@@ -1,9 +1,10 @@
 framework:
     asset_mapper:
         # The paths to make available to the asset mapper.
-        paths:
-            - assets/
-        missing_import_mode: strict
+        # paths:
+        #     - assets/
+        # missing_import_mode: strict
+        enabled: false
 
 when@prod:
     framework:

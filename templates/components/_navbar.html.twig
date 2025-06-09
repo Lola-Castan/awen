@@ -1,51 +1,46 @@
-{# Navigation principale #}
-<nav class="bg-white shadow" x-data="{ open: false }">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
-            {# Logo #}
-            <div class="flex-shrink-0 flex items-center">
-                <a href="{{ path('app_home') }}" class="text-2xl font-bold text-primary">
-                    Awen
+<nav class="bg-white shadow" x-data="{ open: false, userMenuOpen: false }">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div class="flex justify-between items-center">
+            <!-- Logo -->
+            <div class="flex-shrink-0">
+                <a href="{{ path('app_home') }}">
+                    <img src="{{ asset('uploads/images/awen-logo.png') }}" alt="Awen Logo" class="h-10">
                 </a>
             </div>
 
-            {# Navigation desktop #}
-            <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
-                <a href="{{ path('app_product_index') }}" class="text-gray-500 hover:text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 border-transparent">
-                    Produits
-                </a>
-                <a href="{{ path('app_creator_index') }}" class="text-gray-500 hover:text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 border-transparent">
-                    Créateurs
-                </a>
-                <a href="{{ path('app_event_index') }}" class="text-gray-500 hover:text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 border-transparent">
-                    Événements
-                </a>
+            <!-- Desktop navigation -->
+            <div class="hidden md:flex space-x-8">
+                <a href="{{ path('app_product_index') }}" class="text-gray-500 hover:text-gray-900">Produits</a>
+                <a href="{{ path('app_creator_index') }}" class="text-gray-500 hover:text-gray-900">Créateurs</a>
+                <a href="{{ path('app_event_index') }}" class="text-gray-500 hover:text-gray-900">Événements</a>
             </div>
 
-            {# Actions utilisateur (desktop + mobile) #}
+            <!-- Right actions -->
             <div class="flex items-center space-x-4">
-                {# Barre de recherche (desktop only) #}
+                <!-- Search bar (desktop only) -->
                 <div class="hidden md:block w-64">
-                    <form action="{{ path('app_search') }}" method="get" class="w-full">
-                        <div class="relative">
-                            <input type="text" 
-                                name="query" 
-                                class="w-full rounded-lg border-gray-300 pl-10 pr-4 py-2 focus:border-primary focus:ring-primary" 
-                                placeholder="Rechercher...">
-                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                <svg class="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                </svg>
-                            </div>
-                        </div>
-                    </form>
+                    {{ form_start(desktopForm, {'attr': {'class': 'relative', 'action': path('app_search'), 'method': 'get'}}) }}
+                        {{ form_widget(desktopForm.query, {
+                            'attr': {
+                                'class': 'w-full rounded-full border border-gray-300 pl-4 pr-10 py-2 focus:outline-none focus:ring-2 focus:ring-primary',
+                                'placeholder': 'Recherche'
+                            }
+                        }) }}
+                        <button type="submit" class="absolute right-1 top-1 bottom-1 bg-black text-white rounded-full px-3 flex items-center justify-center">
+                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                            </svg>
+                        </button>
+                    {{ form_end(desktopForm) }}
                 </div>
 
-                {# Panier #}
+                <!-- Panier -->
                 <a href="{{ path('app_cart_index') }}" class="text-gray-500 hover:text-gray-900">
                     <div class="relative">
-                        <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                        <svg class="h-6 w-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/>
                         </svg>
                         {% if app.session.get('cart')|length > 0 %}
                             <span class="absolute -top-2 -right-2 bg-primary text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
@@ -55,95 +50,84 @@
                     </div>
                 </a>
 
-                {# Menu utilisateur (desktop + mobile) #}
+                <!-- User -->
                 {% if app.user %}
-                    <div class="relative" x-data="{ userMenuOpen: false }">
-                        <button @click="userMenuOpen = !userMenuOpen" class="flex items-center text-gray-500 hover:text-gray-900 focus:outline-none">
+                    <div class="relative hidden md:block" x-data="{ userMenuOpen: false }">
+                        <button @click="userMenuOpen = !userMenuOpen" class="focus:outline-none">
                             {% if app.user.profilePicture %}
-                                <img src="{{ asset('uploads/profile_pictures/' ~ app.user.profilePicture) }}" 
-                                    alt="{{ app.user.username }}" 
-                                    class="h-8 w-8 rounded-full object-cover">
+                                <img src="{{ asset('uploads/profile_pictures/' ~ app.user.profilePicture) }}"
+                                     alt="{{ app.user.username }}"
+                                     class="h-8 w-8 rounded-full object-cover">
                             {% else %}
-                                <div class="h-8 w-8 rounded-full bg-gray-200 flex items-center justify-center">
-                                    <span class="text-sm font-medium text-gray-500">
-                                        {{ app.user.username|first|upper }}
-                                    </span>
-                                </div>
+                                <svg class="h-6 w-6 text-orange-600" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M10 12a5 5 0 100-10 5 5 0 000 10zm0 2c-3 0-9 1.5-9 4.5V20h18v-1.5c0-3-6-4.5-9-4.5z"/>
+                                </svg>
                             {% endif %}
                         </button>
 
-                        <div x-show="userMenuOpen" 
-                            @click.away="userMenuOpen = false"
-                            x-transition:enter="transition ease-out duration-100"
-                            x-transition:enter-start="transform opacity-0 scale-95"
-                            x-transition:enter-end="transform opacity-100 scale-100"
-                            x-transition:leave="transition ease-in duration-75"
-                            x-transition:leave-start="transform opacity-100 scale-100"
-                            x-transition:leave-end="transform opacity-0 scale-95"
-                            class="absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none"
-                            role="menu"
-                            aria-orientation="vertical"
-                            aria-labelledby="user-menu-button"
-                            tabindex="-1">
+                        <!-- Dropdown user menu -->
+                        <div x-show="userMenuOpen"
+                             @click.away="userMenuOpen = false"
+                             class="absolute right-0 mt-2 w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 py-1 z-50">
                             {% if is_granted('ROLE_CREATOR') %}
-                                <a href="{{ path('app_creator_dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
-                                    Espace créateur
-                                </a>
+                                <a href="{{ path('app_creator_dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Espace créateur</a>
                             {% endif %}
-                                <a href="{{ path('app_profile_show', {'username': app.user.username}) }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
-                                    Mon profil
-                                </a>
-                            <a href="{{ path('app_account_settings') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
-                                Mon compte
-                            </a>
-                            <a href="{{ path('app_account_orders') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
-                                Mes commandes
-                            </a>
+                            <a href="{{ path('app_profile_show', {'username': app.user.username}) }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Mon profil</a>
+                            <a href="{{ path('app_account_settings') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Mon compte</a>
+                            <a href="{{ path('app_account_orders') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Mes commandes</a>
                             <div class="border-t border-gray-100"></div>
-                            <a href="{{ path('app_logout') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
-                                Déconnexion
-                            </a>
+                            <a href="{{ path('app_logout') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Déconnexion</a>
                         </div>
                     </div>
                 {% else %}
-                    <div class="flex space-x-4">
+                    <div class="hidden md:flex space-x-4">
                         <a href="{{ path('app_login') }}" class="text-gray-500 hover:text-gray-900">Connexion</a>
                         <a href="{{ path('app_register') }}" class="text-gray-500 hover:text-gray-900">Inscription</a>
                     </div>
                 {% endif %}
 
-                {# Bouton menu burger (mobile only) #}
-                <div class="flex sm:hidden">
-                    <button type="button" 
-                            class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary"
-                            aria-controls="mobile-menu"
-                            aria-expanded="false"
-                            @click="open = !open">
-                        <span class="sr-only">Ouvrir le menu</span>
-                        <svg class="h-6 w-6" x-show="!open" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                        </svg>
-                        <svg class="h-6 w-6" x-show="open" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                <!-- Mobile user icon -->
+                <div class="md:hidden">
+                    <button @click="userMenuOpen = !userMenuOpen">
+                        <svg class="h-6 w-6 text-orange-600" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M10 12a5 5 0 100-10 5 5 0 000 10zm0 2c-3 0-9 1.5-9 4.5V20h18v-1.5c0-3-6-4.5-9-4.5z"/>
                         </svg>
                     </button>
                 </div>
             </div>
         </div>
-    </div>
 
-    {# Menu mobile (navigation principale uniquement) #}
-    <div class="sm:hidden" id="mobile-menu" x-show="open">
-        <div class="pt-2 pb-3 space-y-1">
-            <a href="{{ path('app_product_index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
-                Produits
-            </a>
-            <a href="{{ path('app_creator_index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
-                Créateurs
-            </a>
-            <a href="{{ path('app_event_index') }}" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-50">
-                Événements
-            </a>
+        <!-- Mobile user menu -->
+        <div x-show="userMenuOpen" class="md:hidden mt-4 space-y-2">
+            {% if app.user %}
+                {% if is_granted('ROLE_CREATOR') %}
+                    <a href="{{ path('app_creator_dashboard') }}" class="block text-gray-700">Espace créateur</a>
+                {% endif %}
+                <a href="{{ path('app_profile_show', {'username': app.user.username}) }}" class="block text-gray-700">Mon profil</a>
+                <a href="{{ path('app_account_settings') }}" class="block text-gray-700">Mon compte</a>
+                <a href="{{ path('app_account_orders') }}" class="block text-gray-700">Mes commandes</a>
+                <a href="{{ path('app_logout') }}" class="block text-gray-700">Déconnexion</a>
+            {% else %}
+                <a href="{{ path('app_login') }}" class="block text-gray-700">Connexion</a>
+                <a href="{{ path('app_register') }}" class="block text-gray-700">Inscription</a>
+            {% endif %}
+        </div>        <!-- Mobile search bar under all nav content -->
+        <div class="block md:hidden px-4 pt-4 pb-2">
+            {{ form_start(mobileForm, {'attr': {'class': 'relative', 'action': path('app_search'), 'method': 'get'}}) }}
+                {{ form_widget(mobileForm.query, {
+                    'attr': {
+                        'class': 'w-full rounded-full border border-gray-300 pl-4 pr-10 py-2 focus:outline-none focus:ring-2 focus:ring-primary',
+                        'placeholder': 'Recherche'
+                    }
+                }) }}
+                <button type="submit" class="absolute right-1 top-1 bottom-1 bg-black text-white rounded-full px-3 flex items-center justify-center">
+                    <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                </button>
+            {{ form_end(mobileForm) }}
         </div>
+
     </div>
-</nav> 
+</nav>
