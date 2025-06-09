@@ -21,7 +21,7 @@
                     theme: {
                         extend: {
                             colors: {
-                                primary: '#4F46E5',
+                                primary: '#EC671B',
                                 secondary: '#10B981'
                             },
                             fontFamily: {
@@ -115,7 +115,91 @@
         </main>
 
         <!-- Footer -->
-        <footer class="bg-white mt-12 py-8 border-t border-gray-200">
+        <footer class="text-white mt-10">
+            <!-- Bloc haut -->
+            <div class="bg-primary px-6 py-8">
+                <div class="space-y-4 text-sm">
+
+                <a href="{{ path('app_home') }}" class="py-1 font-semibold">Accueil</a>
+                <!-- Découvrir -->
+                <div>
+                    <button class="w-full flex items-center justify-between font-semibold dropdown-toggle">
+                    <span>Découvrir</span>
+                    <span class="transition-transform">&#x25BC;</span>
+                    </button>
+                    <div class="dropdown-menu flex flex-col hidden ml-2 mt-2 text-white/90">
+                        <a href="{{ path('app_product_index') }}" class="py-1">Les produits</a>
+                        <a href="{{ path('app_creator_index') }}" class="py-1">Les créateurs</a>
+                        <a href="{{ path('app_event_index') }}" class="py-1">Les événements</a>
+                        <a href="{{ path('app_post_index') }}" class="py-1">Les posts</a>
+                    </div>
+                </div>
+
+                <!-- Vendre -->
+                <div>
+                    <button class="w-full flex items-center justify-between font-semibold dropdown-toggle">
+                    <span>Vendre</span>
+                    <span class="transition-transform">&#x25BC;</span>
+                    </button>
+                    <div class="dropdown-menu flex flex-col hidden ml-2 mt-2 text-white/90">
+                        <a href="{{ path('app_register_creator') }}" class="py-1">Devenir créateur</a>
+                        <a href="#" class="py-1">Tarifs</a>
+                    </div>
+                </div>
+
+                <!-- À propos -->
+                <div>
+                    <button class="w-full flex items-center justify-between font-semibold dropdown-toggle">
+                    <span>A propos</span>
+                    <span class="transition-transform">&#x25BC;</span>
+                    </button>
+                    <div class="dropdown-menu hidden ml-2 mt-2 text-white/90">
+                    <p class="py-1">Notre mission</p>
+                    <p class="py-1">L'équipe</p>
+                    </div>
+                </div>
+
+                <!-- Aide -->
+                <div>
+                    <button class="w-full flex items-center justify-between font-semibold dropdown-toggle">
+                    <span>Aide</span>
+                    <span class="transition-transform rotate-180">&#x25BC;</span>
+                    </button>
+                    <div class="dropdown-menu ml-2 mt-2 text-white/90">
+                    <p class="py-1">Centre d’aide</p>
+                    <p class="py-1">Paramètre de confidentialité</p>
+                    </div>
+                </div>
+
+                </div>
+            </div>
+
+            <!-- Bloc bas -->
+            <div class="bg-[#242424] px-6 py-6 text-sm space-y-4">
+                <div class="flex flex-col md:flex-row md:space-x-6 space-y-2 md:space-y-0">
+                    <a href="#" class="hover:underline">Condition d'utilisation</a>
+                    <a href="#" class="hover:underline">Confidentialité</a>
+                    <a href="#" class="hover:underline">Cookies</a>
+                </div>
+            </div>
+            <div class="bg-white text-sm space-y-4 text-center py-2">
+                <span class="text-sm font-semibold text-[#242424]">&copy; {{ "now"|date('Y') }} Awen. Tous droits réservés.</span>
+            </div>
+        </footer>
+
+        <script>
+        document.querySelectorAll('.dropdown-toggle').forEach((btn) => {
+            btn.addEventListener('click', () => {
+            const menu = btn.nextElementSibling;
+            const icon = btn.querySelector('span:last-child');
+            menu.classList.toggle('hidden');
+            icon.classList.toggle('rotate-180');
+            });
+        });
+        </script>
+
+
+        {# <footer class="bg-white mt-12 py-8 border-t border-gray-200">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
                     <div>
@@ -152,6 +236,6 @@
                     <p>&copy; {{ "now"|date('Y') }} Awen. Tous droits réservés.</p>
                 </div>
             </div>
-        </footer>
+        </footer> #}
     </body>
 </html>
