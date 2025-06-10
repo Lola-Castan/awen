@@ -72,6 +72,7 @@ class CartController extends AbstractController
             return $this->redirectToRoute('app_cart_index');
         }
 
+        /** @var \App\Entity\User $user */
         $user = $this->getUser();
         
         // Créer la commande
