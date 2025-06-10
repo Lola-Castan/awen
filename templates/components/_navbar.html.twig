@@ -52,14 +52,13 @@
 
                 <!-- User -->
                 {% if app.user %}
-                    <div class="relative hidden md:block" x-data="{ userMenuOpen: false }">
-                        <button @click="userMenuOpen = !userMenuOpen" class="focus:outline-none">
+                    <div class="relative hidden md:block" x-data="{ userMenuOpen: false }">                        <button @click="userMenuOpen = !userMenuOpen" class="focus:outline-none">
                             {% if app.user.profilePicture %}
                                 <img src="{{ asset('uploads/profile_pictures/' ~ app.user.profilePicture) }}"
                                      alt="{{ app.user.username }}"
-                                     class="h-8 w-8 rounded-full object-cover">
+                                     class="h-10 w-10 rounded-full object-cover border-2 border-primary hover:border-primary/80 transition-colors">
                             {% else %}
-                                <svg class="h-6 w-6 text-orange-600" fill="currentColor" viewBox="0 0 20 20">
+                                <svg class="h-8 w-8 text-orange-600" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M10 12a5 5 0 100-10 5 5 0 000 10zm0 2c-3 0-9 1.5-9 4.5V20h18v-1.5c0-3-6-4.5-9-4.5z"/>
                                 </svg>
                             {% endif %}
@@ -84,14 +83,18 @@
                         <a href="{{ path('app_login') }}" class="text-gray-500 hover:text-gray-900">Connexion</a>
                         <a href="{{ path('app_register') }}" class="text-gray-500 hover:text-gray-900">Inscription</a>
                     </div>
-                {% endif %}
-
-                <!-- Mobile user icon -->
+                {% endif %}                <!-- Mobile user icon -->
                 <div class="md:hidden">
-                    <button @click="userMenuOpen = !userMenuOpen">
-                        <svg class="h-6 w-6 text-orange-600" fill="currentColor" viewBox="0 0 20 20">
-                            <path d="M10 12a5 5 0 100-10 5 5 0 000 10zm0 2c-3 0-9 1.5-9 4.5V20h18v-1.5c0-3-6-4.5-9-4.5z"/>
-                        </svg>
+                    <button @click="userMenuOpen = !userMenuOpen" class="focus:outline-none">
+                        {% if app.user and app.user.profilePicture %}
+                            <img src="{{ asset('uploads/profile_pictures/' ~ app.user.profilePicture) }}"
+                                 alt="{{ app.user.username }}"
+                                 class="h-10 w-10 rounded-full object-cover border-2 border-primary hover:border-primary/80 transition-colors">
+                        {% else %}
+                            <svg class="h-8 w-8 text-orange-600" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M10 12a5 5 0 100-10 5 5 0 000 10zm0 2c-3 0-9 1.5-9 4.5V20h18v-1.5c0-3-6-4.5-9-4.5z"/>
+                            </svg>
+                        {% endif %}
                     </button>
                 </div>
             </div>
