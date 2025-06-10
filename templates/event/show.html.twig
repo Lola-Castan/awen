@@ -97,7 +97,7 @@
                     {% for user in organizers %}
                         <div class="flex items-center mr-6 mb-3">
                             {% if user.profilePicture %}
-                                <img src="{{ asset('uploads/profiles/' ~ user.profilePicture) }}" alt="{{ user.firstName }}" class="w-10 h-10 rounded-full mr-3 object-cover">
+                                <img src="{{ asset('uploads/profile_pictures/' ~ user.profilePicture) }}" alt="{{ user.firstName }}" class="w-10 h-10 rounded-full mr-3 object-cover">
                             {% else %}
                                 <div class="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center mr-3">
                                     <span class="text-gray-600 font-medium">{{ user.firstName|first|upper }}{{ user.lastName|first|upper }}</span>
@@ -127,7 +127,7 @@
                     {% for user in participants %}
                         <div class="flex items-center mr-6 mb-3">
                             {% if user.profilePicture %}
-                                <img src="{{ asset('uploads/profiles/' ~ user.profilePicture) }}" alt="{{ user.firstName }}" class="w-8 h-8 rounded-full mr-2 object-cover">
+                                <img src="{{ asset('uploads/profile_pictures/' ~ user.profilePicture) }}" alt="{{ user.firstName }}" class="w-8 h-8 rounded-full mr-2 object-cover">
                             {% else %}
                                 <div class="w-8 h-8 rounded-full bg-gray-300 flex items-center justify-center mr-2">
                                     <span class="text-gray-600 font-medium text-xs">{{ user.firstName|first|upper }}</span>

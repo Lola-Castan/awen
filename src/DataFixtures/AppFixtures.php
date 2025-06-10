@@ -28,7 +28,7 @@ class AppFixtures extends Fixture
     {
         $this->passwordHasher = $passwordHasher;
     }
-
+    
     public function load(ObjectManager $manager): void
     {
         // Create roles
@@ -43,134 +43,160 @@ class AppFixtures extends Fixture
         $roleAdmin = new Role();
         $roleAdmin->setName('ROLE_ADMIN');
         $manager->persist($roleAdmin);
-
-        // Create basic user
-        $user = new User();
-        $user->setUsername('basicuser')
-            ->setEmail('user@example.com')
-            ->setPassword($this->passwordHasher->hashPassword($user, 'password'))
-            ->setFirstName('John')
-            ->setLastName('Doe')
-            ->setBirthDate(new \DateTimeImmutable('1990-01-01'))
-            ->setCreatedAt(new \DateTimeImmutable());
-
-        $user->addRole($roleUser);
-        $manager->persist($user);
-
-        // Creator
-        $creator = new User();
-        $creator->setUsername('creatoruser')
-            ->setEmail('creator@example.com')
-            ->setPassword($this->passwordHasher->hashPassword($creator, 'password'))
-            ->setFirstName('Clara')
-            ->setLastName('Craft')
-            ->setBirthDate(new \DateTimeImmutable('1988-03-05'))
-            ->setCreatedAt(new \DateTimeImmutable());
-
-        $creator->addRole($roleUser);
-        $creator->addRole($roleCreator);
-
-        $creatorInfo = $creator->getCreatorInfo();
-        $creatorInfo->setDisplayName('Clara C.')
-            ->setInstagramProfile('https://instagram.com/claracraft')
-            ->setFacebookProfile('https://facebook.com/claracraft')
-            ->setPinterestProfile('https://pinterest.com/claracraft')
-            ->setDescription('Créatrice passionnée par le DIY')
-            ->setPracticalInfos('Livraison sous 5 jours ouvrés')
-            ->setCoverImage('cover_clara.jpg');
-
-        $manager->persist($creator);
+        // Create basic users (10 users)
+        $users = [];
+        $userNames = [
+            ['amel', 'Amel', 'Bouchard', 'amel@example.com'],
+            ['kenzo', 'Kenzo', 'Dubois-Nakamura', 'kenzo@example.com'],
+            ['fatou', 'Fatou', 'Diallo', 'fatou@example.com'],
+            ['yanis', 'Yanis', 'Martin-Benali', 'yanis@example.com'],
+            ['lina', 'Lina', 'Rousseau', 'lina@example.com'],
+            ['abdel', 'Abdel', 'Traore-Lemaire', 'abdel@example.com'],
+            ['lou', 'Lou', 'Bernard', 'lou@example.com'],
+            ['zineb', 'Zineb', 'Moreau-Haddad', 'zineb@example.com'],
+            ['baptiste', 'Baptiste', 'Kouame', 'baptiste@example.com'],
+            ['jade', 'Jade', 'Chen-Petit', 'jade@example.com']
+        ];
         
-        // Second Creator
-        $creator2 = new User();
-        $creator2->setUsername('jules')
-            ->setEmail('jules@example.com')
-            ->setPassword($this->passwordHasher->hashPassword($creator2, 'password'))
-            ->setFirstName('Jules')
-            ->setLastName('Martin')
-            ->setBirthDate(new \DateTimeImmutable('1992-07-15'))
-            ->setCreatedAt(new \DateTimeImmutable());
+        foreach ($userNames as $index => $userData) {
+            $user = new User();
+            $user->setUsername($userData[0])
+                ->setEmail($userData[3])
+                ->setPassword($this->passwordHasher->hashPassword($user, 'password'))
+                ->setFirstName($userData[1])
+                ->setLastName($userData[2])
+                ->setBirthDate(new \DateTimeImmutable('1985-0' . (($index % 9) + 1) . '-' . sprintf('%02d', ($index % 28) + 1)))
+                ->setCreatedAt(new \DateTimeImmutable('-' . (60 - $index * 5) . ' days'));
 
-        $creator2->addRole($roleUser);
-        $creator2->addRole($roleCreator);
+            // Ajouter une photo de profil pour certains utilisateurs (pas tous)
+            if ($index % 3 === 0) {
+                $profilePictures = ['claracraft.jpg', 'julesart.jpg'];
+                $user->setProfilePicture($profilePictures[$index % 2]);
+            }
 
-        $creatorInfo2 = $creator2->getCreatorInfo();
-        $creatorInfo2->setDisplayName('Jules Art')
-            ->setInstagramProfile('https://instagram.com/julesart')
-            ->setDescription('Artiste contemporain travaillant principalement avec le bois')
-            ->setPracticalInfos('Ateliers disponibles sur demande')
-            ->setCoverImage('cover_jules.jpg');
+            $user->addRole($roleUser);
+            $manager->persist($user);
+            $users[] = $user;
+        }
+        
+        // Create creators (10 creators)
+        $creators = [];
+        $creatorData = [
+            ['clara', 'Clara', 'Moreau', 'clara@example.com', 'Atelier Clara', 'Céramiste passionnée par les formes organiques et les émaux naturels', 'cover_clara.jpg'],
+            ['jules', 'Jules', 'Kouassi', 'jules@example.com', 'Bois & Lumière', 'Ébéniste sculpteur spécialisé dans le mobilier contemporain en bois massif', 'cover_jules.jpg'],
+            ['leïla', 'Leïla', 'Benabdallah', 'leila@example.com', 'Leïla Textile', 'Créatrice textile engagée dans la mode éthique et le upcycling', 'cover_clara.jpg'],
+            ['maxime', 'Maxime', 'Nguyen', 'maxime@example.com', 'Forge Maxime', 'Artisan forgeron créateur d\'objets décoratifs et utilitaires', 'cover_jules.jpg'],
+            ['amina', 'Amina', 'Traoré', 'amina@example.com', 'Cosmétiques d\'Amina', 'Créatrice de cosmétiques naturels inspirés des traditions africaines', 'cover_clara.jpg'],
+            ['enzo', 'Enzo', 'Lefebvre', 'enzo@example.com', 'Cuir & Créations', 'Maroquinier artisan spécialisé dans les accessoires sur mesure', 'cover_jules.jpg'],
+            ['sofia', 'Sofia', 'Yamamoto', 'sofia@example.com', 'Verre Sofia', 'Maître verrier créant des pièces uniques en verre soufflé', 'cover_clara.jpg'],
+            ['théo', 'Théo', 'Dubois', 'theo@example.com', 'Photo Théo', 'Photographe artisan capturant l\'essence des métiers d\'art', 'cover_jules.jpg'],
+            ['nour', 'Nour', 'Mansouri', 'nour@example.com', 'Papeterie Nour', 'Créatrice de papeterie artisanale et de reliures d\'art', 'cover_clara.jpg'],
+            ['mathis', 'Mathis', 'Diouf', 'mathis@example.com', 'Pierre & Mathis', 'Sculpteur sur pierre révélant la beauté des matériaux naturels', 'cover_jules.jpg']
+        ];
+        
+        foreach ($creatorData as $index => $data) {
+            $creator = new User();
+            $creator->setUsername($data[0])
+                ->setEmail($data[3])
+                ->setPassword($this->passwordHasher->hashPassword($creator, 'password'))
+                ->setFirstName($data[1])
+                ->setLastName($data[2])
+                ->setBirthDate(new \DateTimeImmutable('198' . (($index % 9) + 1) . '-0' . (($index % 9) + 1) . '-15'))
+                ->setCreatedAt(new \DateTimeImmutable('-' . (90 - $index * 8) . ' days'));
 
-        $manager->persist($creator2);
+            // Ajouter une photo de profil (alternance entre les deux images disponibles)
+            $profilePictures = ['claracraft.jpg', 'julesart.jpg'];
+            $creator->setProfilePicture($profilePictures[$index % 2]);
 
-        // Admin
+            $creator->addRole($roleUser);
+            $creator->addRole($roleCreator);
+
+            $creatorInfo = $creator->getCreatorInfo();
+            $creatorInfo->setDisplayName($data[4])
+                ->setInstagramProfile('https://instagram.com/' . $data[0])
+                ->setDescription($data[5])
+                ->setPracticalInfos('Livraison sous 5-7 jours ouvrés')
+                ->setCoverImage($data[6]);
+
+            $manager->persist($creator);
+            $creators[] = $creator;
+        }// Admin
         $admin = new User();
         $admin->setUsername('admin')
             ->setEmail('admin@example.com')
             ->setPassword($this->passwordHasher->hashPassword($admin, 'adminpass'))
-            ->setFirstName('Ada')
-            ->setLastName('Root')
+            ->setFirstName('Camille')
+            ->setLastName('Administrateur')
             ->setBirthDate(new \DateTimeImmutable('1980-12-12'))
             ->setCreatedAt(new \DateTimeImmutable());
 
         $admin->addRole($roleUser);
         $admin->addRole($roleAdmin);
-        $manager->persist($admin);
+        $manager->persist($admin);        
+        // Création des catégories (plus variées)
+        $categories = [];
         
-        // Création des catégories
-        $categoryDeco = new Category();
-        $categoryDeco->setName('Décoration');
-        $manager->persist($categoryDeco);
+        $categoryData = [
+            ['Décoration', 'Objets décoratifs pour la maison'],
+            ['Bijoux', 'Bijoux artisanaux et accessoires'],
+            ['Art', 'Œuvres d\'art et sculptures'],
+            ['Maison', 'Objets utiles pour le quotidien'],
+            ['Mode', 'Vêtements et accessoires de mode'],
+            ['Textile', 'Créations textiles et tissées'],
+            ['Cuir', 'Maroquinerie et accessoires en cuir'],
+            ['Verre', 'Créations en verre et cristal'],
+            ['Métal', 'Objets forgés et travail du métal'],
+            ['Cosmétiques', 'Produits de beauté naturels']
+        ];
         
-        $categoryBijoux = new Category();
-        $categoryBijoux->setName('Bijoux');
-        $manager->persist($categoryBijoux);
+        foreach ($categoryData as $catData) {
+            $category = new Category();
+            $category->setName($catData[0]);
+            $manager->persist($category);
+            $categories[] = $category;
+        }
         
-        $categoryArt = new Category();
-        $categoryArt->setName('Art');
-        $manager->persist($categoryArt);
+        // Association des catégories aux créateurs (distribution variée)
+        foreach ($creators as $index => $creator) {
+            // Chaque créateur a 2-3 catégories
+            $creator->addCategory($categories[$index % count($categories)]);
+            $creator->addCategory($categories[($index + 1) % count($categories)]);
+            if ($index % 3 === 0) {
+                $creator->addCategory($categories[($index + 2) % count($categories)]);
+            }
+        }
+          // Création des catégories d'événements
+        $eventCategories = [];
         
-        $categoryMaison = new Category();
-        $categoryMaison->setName('Maison');
-        $manager->persist($categoryMaison);
-        
-        $categoryMode = new Category();
-        $categoryMode->setName('Mode');
-        $manager->persist($categoryMode);
-        
-        // Association des catégories aux créateurs
-        $categoryDeco->addCreator($creator);
-        $categoryBijoux->addCreator($creator);
-        $categoryMaison->addCreator($creator);
-        
-        $categoryArt->addCreator($creator2);
-        $categoryDeco->addCreator($creator2);
-        
-        // Création des catégories d'événements
         $eventCategoryAtelier = new EventCategory();
         $eventCategoryAtelier->setName('Atelier');
         $eventCategoryAtelier->setDescription('Ateliers pratiques et participatifs');
         $manager->persist($eventCategoryAtelier);
+        $eventCategories[] = $eventCategoryAtelier;
         
         $eventCategoryExposition = new EventCategory();
         $eventCategoryExposition->setName('Exposition');
         $eventCategoryExposition->setDescription('Expositions artistiques et culturelles');
         $manager->persist($eventCategoryExposition);
+        $eventCategories[] = $eventCategoryExposition;
         
         $eventCategoryMarche = new EventCategory();
         $eventCategoryMarche->setName('Marché');
         $eventCategoryMarche->setDescription('Marchés de créateurs et ventes éphémères');
         $manager->persist($eventCategoryMarche);
+        $eventCategories[] = $eventCategoryMarche;
         
         $eventCategoryConference = new EventCategory();
         $eventCategoryConference->setName('Conférence');
         $eventCategoryConference->setDescription('Conférences, tables rondes et discussions');
         $manager->persist($eventCategoryConference);
+        $eventCategories[] = $eventCategoryConference;
         
         $eventCategoryFormation = new EventCategory();
         $eventCategoryFormation->setName('Formation');
         $eventCategoryFormation->setDescription('Formations et cours techniques');
         $manager->persist($eventCategoryFormation);
+        $eventCategories[] = $eventCategoryFormation;
         
         // Création des images (indépendantes des produits)
         $images = [];
@@ -244,303 +270,202 @@ class AppFixtures extends Fixture
             ->setTitle("Marché des créateurs");
         $manager->persist($image9);
         $images[] = $image9;
-
-        // Create a product with ManyToMany relation to images
-        $product1 = new Product();
-        $product1->setName('Vase artisanal')
-            ->setShortDescription('Vase en céramique fait main')
-            ->setLongDescription('Vase en céramique entièrement fait à la main avec des matériaux naturels et locaux. Chaque pièce est unique.')
-            ->setStock(100)
-            ->setWeight(500)
-            ->setWidth(20)
-            ->setDepth(30)
-            ->setHeight(15)
-            ->setPrice(1999) // Price in cents (19.99 EUR)
-            ->setShowcaseProduct(true)
-            ->setStatus(ProductStatus::Published)
-            ->setCreatedAt(new \DateTimeImmutable())
-            ->setCreator($creator)
-            ->addCategory($categoryDeco)
-            ->addCategory($categoryMaison)
-            ->addImage($image1)
-            ->addImage($image2);
-
-        $manager->persist($product1);
         
-        // Create another product
-        $product2 = new Product();
-        $product2->setName('Collier perles')
-            ->setShortDescription('Collier en perles naturelles')
-            ->setLongDescription('Collier en perles naturelles monté à la main. Ce bijou élégant saura sublimer toutes vos tenues.')
-            ->setStock(50)
-            ->setWeight(700)
-            ->setWidth(15)
-            ->setDepth(25)
-            ->setHeight(20)
-            ->setPrice(2999) // Price in cents (29.99 EUR)
-            ->setShowcaseProduct(false)
-            ->setStatus(ProductStatus::Draft)
-            ->setCreatedAt(new \DateTimeImmutable())
-            ->setCreator($creator)
-            ->addCategory($categoryBijoux)
-            ->addCategory($categoryMode)
-            ->addImage($image3);
+        // Create multiple products (30+ products)
+        $products = [];
+        
+        $productData = [
+            ['Vase artisanal', 'Vase en céramique fait main', 'Vase en céramique entièrement fait à la main avec des matériaux naturels et locaux.', 100, 500, 20, 30, 15, 1999, true, ProductStatus::Published],
+            ['Collier perles naturelles', 'Collier en perles de bois', 'Collier élégant en perles de bois naturel, pièce unique.', 50, 50, 0, 0, 0, 2999, false, ProductStatus::Published],
+            ['Sculpture abstraite', 'Sculpture en bois recyclé', 'Œuvre d\'art unique créée avec du bois de récupération.', 5, 1200, 40, 30, 50, 9990, true, ProductStatus::Published],
+            ['Bracelet argent', 'Bracelet artisanal en argent', 'Bracelet fait main en argent 925, design contemporain.', 25, 30, 0, 0, 0, 4500, false, ProductStatus::Published],
+            ['Lampe design', 'Lampe en bois flotté', 'Lampe unique créée à partir de bois flotté ramassé sur les plages.', 12, 800, 25, 25, 40, 7500, true, ProductStatus::Published],
+            ['Sac en cuir', 'Sac bandoulière cuir', 'Sac artisanal en cuir pleine fleur, coutures main.', 30, 600, 30, 10, 25, 12000, false, ProductStatus::Published],
+            ['Verre soufflé', 'Vase en verre coloré', 'Vase unique en verre soufflé, couleurs irisées.', 8, 400, 15, 15, 25, 6500, true, ProductStatus::Published],
+            ['Bougie naturelle', 'Bougie cire de soja', 'Bougie parfumée à la cire de soja, senteur lavande.', 100, 200, 8, 8, 10, 1800, false, ProductStatus::Published],
+            ['Plateau bois', 'Plateau de service chêne', 'Plateau de service en chêne massif, finition huile.', 20, 1000, 40, 25, 3, 5500, false, ProductStatus::Published],
+            ['Boucles d\'oreilles', 'Boucles artisanales', 'Boucles d\'oreilles en argent et pierres semi-précieuses.', 40, 15, 0, 0, 0, 3200, false, ProductStatus::Published],
+            ['Miroir décoratif', 'Miroir encadré bois', 'Miroir avec cadre en bois sculpté à la main.', 15, 2000, 50, 3, 50, 8500, true, ProductStatus::Published],
+            ['Écharpe laine', 'Écharpe tricotée main', 'Écharpe en laine mérinos, tricotage traditionnel.', 25, 150, 0, 0, 0, 4200, false, ProductStatus::Published],
+            ['Pot en grès', 'Pot décoratif grès', 'Pot en grès émaillé, parfait pour plantes d\'intérieur.', 35, 800, 20, 20, 25, 3500, false, ProductStatus::Published],
+            ['Couteau cuisine', 'Couteau forgé main', 'Couteau de cuisine forgé à la main, lame carbone.', 10, 300, 25, 3, 2, 15000, true, ProductStatus::Published],
+            ['Savon artisanal', 'Savon huiles essentielles', 'Savon saponifié à froid, ingrédients bio.', 200, 100, 8, 5, 3, 800, false, ProductStatus::Published],
+            ['Tableau abstrait', 'Peinture acrylique', 'Tableau abstrait original, technique mixte.', 3, 500, 40, 2, 30, 25000, true, ProductStatus::Published],
+            ['Panier osier', 'Panier tressé main', 'Panier en osier tressé selon méthodes traditionnelles.', 18, 200, 30, 30, 15, 2800, false, ProductStatus::Published],
+            ['Pendentif pierre', 'Pendentif améthyste', 'Pendentif en argent serti d\'une améthyste naturelle.', 15, 25, 0, 0, 0, 5800, false, ProductStatus::Published],
+            ['Carnet cuir', 'Carnet reliure cuir', 'Carnet artisanal avec couverture cuir et papier recyclé.', 50, 250, 15, 2, 20, 2200, false, ProductStatus::Published],
+            ['Photographie art', 'Tirage photo limité', 'Photographie artistique, tirage limité et signé.', 5, 100, 30, 1, 40, 18000, true, ProductStatus::Published],
+            ['Étagère murale', 'Étagère bois massif', 'Étagère murale en bois massif, design épuré.', 12, 1500, 60, 15, 8, 9500, false, ProductStatus::Published],
+            ['Bague argent', 'Bague contemporaine', 'Bague en argent massif, design géométrique.', 20, 20, 0, 0, 0, 6200, false, ProductStatus::Published],
+            ['Vase terre cuite', 'Vase traditionnel', 'Vase en terre cuite, technique ancestrale.', 25, 600, 18, 18, 22, 2800, false, ProductStatus::Published],
+            ['Housse coussin', 'Housse lin brodé', 'Housse de coussin en lin avec broderies main.', 40, 100, 40, 40, 2, 3800, false, ProductStatus::Published],
+            ['Sculpture métal', 'Sculpture fer forgé', 'Sculpture décorative en fer forgé, pièce unique.', 2, 5000, 30, 30, 80, 35000, true, ProductStatus::Published],
+            ['Crème visage', 'Crème hydratante bio', 'Crème visage aux huiles végétales, formule bio.', 60, 50, 5, 5, 5, 2500, false, ProductStatus::Published],
+            ['Mobile décoratif', 'Mobile en bois', 'Mobile décoratif en bois, suspension artistique.', 8, 150, 30, 30, 40, 4500, false, ProductStatus::Published],
+            ['Théière céramique', 'Théière artisanale', 'Théière en céramique émaillée, capacité 1L.', 15, 600, 20, 15, 12, 6800, true, ProductStatus::Published],
+            ['Châle tissé', 'Châle laine alpaga', 'Châle en laine d\'alpaga, tissage artisanal.', 12, 200, 0, 0, 0, 8500, false, ProductStatus::Published],
+            ['Cadre photo', 'Cadre bois recyclé', 'Cadre photo en bois de récupération, style vintage.', 30, 300, 25, 2, 20, 1800, false, ProductStatus::Published]
+        ];
 
-        $manager->persist($product2);
-        
-        // Product from second creator
-        $product3 = new Product();
-        $product3->setName('Sculpture bois')
-            ->setShortDescription('Sculpture abstraite en bois')
-            ->setLongDescription('Œuvre d\'art unique créée avec du bois de récupération. Cette sculpture apportera une touche originale à votre intérieur.')
-            ->setStock(10)
-            ->setWeight(1200)
-            ->setWidth(40)
-            ->setDepth(30)
-            ->setHeight(50)
-            ->setPrice(9990) // Price in cents (99.90 EUR)
-            ->setShowcaseProduct(true)
-            ->setStatus(ProductStatus::Published)
-            ->setCreatedAt(new \DateTimeImmutable())
-            ->setCreator($creator2)
-            ->addCategory($categoryArt)
-            ->addCategory($categoryDeco)
-            ->addImage($image4)
-            ->addImage($image5)
-            ->addImage($image6);
+        foreach ($productData as $index => $data) {
+            $product = new Product();
+            $product->setName($data[0])
+                ->setShortDescription($data[1])
+                ->setLongDescription($data[2])
+                ->setStock($data[3])
+                ->setWeight($data[4])
+                ->setWidth($data[5])
+                ->setDepth($data[6])
+                ->setHeight($data[7])
+                ->setPrice($data[8])
+                ->setShowcaseProduct($data[9])
+                ->setStatus($data[10])
+                ->setCreatedAt(new \DateTimeImmutable('-' . (($index * 3) + 10) . ' days'))
+                ->setCreator($creators[$index % count($creators)]);
 
-        $manager->persist($product3);
+            // Ajouter 1-2 catégories par produit
+            $product->addCategory($categories[$index % count($categories)]);
+            if ($index % 2 === 0) {
+                $product->addCategory($categories[($index + 1) % count($categories)]);
+            }
+
+            // Ajouter 1-3 images par produit (réutiliser les mêmes images)
+            $imageCount = ($index % 3) + 1;
+            for ($i = 0; $i < $imageCount; $i++) {
+                $imageIndex = ($index + $i) % count($images);
+                $product->addImage($images[$imageIndex]);
+            }
+
+            $manager->persist($product);
+            $products[] = $product;
+        }
+
+        // Création des événements (plus d'événements variés)
+        $events = [];
         
-        // Création des événements
-        
-        // Événement 1: Atelier de création de bijoux
-        $event1 = new Event();
-        $event1->setTitle('Atelier de création de bijoux')
-            ->setShortDescription('Apprenez à créer vos propres bijoux en perles naturelles')
-            ->setLongDescription('Rejoignez-nous pour un atelier pratique où vous apprendrez à créer vos propres bijoux en perles naturelles. Tous les matériaux sont fournis et vous repartirez avec votre création. Cet atelier est adapté à tous les niveaux, aucune expérience préalable n\'est requise.')
-            ->setLocation('Boutique Awen, 15 rue des Artisans, Paris')
-            ->setStartDateTime(new \DateTimeImmutable('+7 days 14:00:00'))
-            ->setEndDateTime(new \DateTimeImmutable('+7 days 17:00:00'))
-            ->setStatus(EventStatus::Published) // Événement publié
-            ->addImage($image7)
-            ->addImage($image3)
-            ->addEventCategory($eventCategoryAtelier)
-            ->addEventCategory($eventCategoryFormation);
+        $eventData = [
+            ['Atelier création bijoux', 'Apprenez à créer vos propres bijoux', 'Atelier pratique pour créer des bijoux uniques en perles naturelles.', 'Boutique Awen, Paris', '+7 days 14:00:00', '+7 days 17:00:00', EventStatus::Published],
+            ['Exposition art contemporain', 'Découvrez les œuvres de nos artistes', 'Exposition collective présentant les dernières créations de nos artistes.', 'Galerie Moderna, Lyon', '+14 days 18:00:00', '+21 days 20:00:00', EventStatus::Published],
+            ['Marché des créateurs', 'Rencontrez les créateurs locaux', 'Le rendez-vous mensuel des créateurs et amateurs d\'artisanat.', 'Place du marché, Nantes', '+30 days 10:00:00', '+30 days 18:00:00', EventStatus::Published],
+            ['Atelier décoration durable', 'Créez des décorations écologiques', 'Apprenez à créer des décorations à partir de matériaux recyclés.', 'MakerSpace, Bordeaux', '+45 days 15:00:00', '+45 days 18:30:00', EventStatus::Draft],
+            ['Conférence artisanat local', 'L\'importance de l\'artisanat local', 'Échanges sur la place de l\'artisanat dans l\'économie locale.', 'Centre culturel, Toulouse', '-15 days 10:00:00', '-15 days 12:30:00', EventStatus::Archived],
+            ['Atelier poterie', 'Initiation au tour de potier', 'Découvrez l\'art de la poterie dans un atelier convivial.', 'Atelier Terre, Marseille', '+21 days 09:00:00', '+21 days 12:00:00', EventStatus::Published],
+            ['Salon du textile', 'Textile artisanal et mode éthique', 'Salon dédié au textile artisanal et à la mode responsable.', 'Palais des congrès, Lille', '+60 days 10:00:00', '+62 days 18:00:00', EventStatus::Published],
+            ['Atelier forge', 'Initiation au travail du métal', 'Apprenez les bases de la forge dans un véritable atelier.', 'Forge traditionnelle, Strasbourg', '+35 days 13:00:00', '+35 days 17:00:00', EventStatus::Published],
+            ['Festival des métiers d\'art', 'Célébration de l\'artisanat', 'Festival annuel célébrant tous les métiers d\'art.', 'Centre-ville, Rennes', '+90 days 10:00:00', '+92 days 19:00:00', EventStatus::Draft],
+            ['Atelier cosmétiques naturels', 'Fabriquez vos produits de beauté', 'Atelier pour créer ses propres cosmétiques bio.', 'Laboratoire Bio, Nice', '+28 days 14:30:00', '+28 days 17:30:00', EventStatus::Published],
+            ['Marché de Noël artisanal', 'Marché spécial fêtes de fin d\'année', 'Marché de créateurs spécialisé dans les cadeaux artisanaux.', 'Place principale, Angers', '+120 days 15:00:00', '+122 days 20:00:00', EventStatus::Draft],
+            ['Atelier reliure', 'L\'art de la reliure artisanale', 'Apprenez à relier vos propres livres et carnets.', 'Bibliothèque municipale, Dijon', '+42 days 10:00:00', '+42 days 16:00:00', EventStatus::Published],
+            ['Exposition photographie', 'Regards sur l\'artisanat', 'Exposition photographique sur les métiers d\'art.', 'Galerie Photo, Montpellier', '+55 days 17:00:00', '+70 days 19:00:00', EventStatus::Published],
+            ['Atelier sculpture pierre', 'Initiation à la taille de pierre', 'Découvrez l\'art ancestral de la sculpture sur pierre.', 'Carrière pédagogique, Caen', '+49 days 09:00:00', '+49 days 17:00:00', EventStatus::Published],
+            ['Journée portes ouvertes', 'Visitez les ateliers d\'artisans', 'Journée spéciale pour découvrir les ateliers de nos créateurs.', 'Quartier artisanal, Tours', '+77 days 10:00:00', '+77 days 18:00:00', EventStatus::Published]
+        ];
+
+        foreach ($eventData as $index => $data) {
+            $event = new Event();
+            $event->setTitle($data[0])
+                ->setShortDescription($data[1])
+                ->setLongDescription($data[2])
+                ->setLocation($data[3])
+                ->setStartDateTime(new \DateTimeImmutable($data[4]))
+                ->setEndDateTime(new \DateTimeImmutable($data[5]))
+                ->setStatus($data[6]);
+
+            // Ajouter 1-2 catégories d'événements
+            $event->addEventCategory($eventCategories[$index % count($eventCategories)]);
+            if ($index % 3 === 0) {
+                $event->addEventCategory($eventCategories[($index + 1) % count($eventCategories)]);
+            }
+
+            // Ajouter 1-2 images par événement
+            $imageCount = ($index % 2) + 1;
+            for ($i = 0; $i < $imageCount; $i++) {
+                $imageIndex = ($index + $i) % count($images);
+                $event->addImage($images[$imageIndex]);
+            }
+
+            // Ajouter des organisateurs et participants
+            $event->addUserWithStatus($creators[$index % count($creators)], EventUserStatus::ORGANIZER);
             
-        $manager->persist($event1);
-        
-        // Événement 2: Exposition d'art contemporain
-        $event2 = new Event();
-        $event2->setTitle('Exposition d\'art contemporain')
-            ->setShortDescription('Découvrez les nouvelles œuvres de Jules Martin')
-            ->setLongDescription('Une exposition exceptionnelle présentant les dernières créations de Jules Martin. Venez découvrir ses sculptures en bois et échanger avec l\'artiste sur son processus créatif. Un verre de bienvenue sera offert.')
-            ->setLocation('Galerie Moderna, 8 avenue des Arts, Lyon')
-            ->setStartDateTime(new \DateTimeImmutable('+14 days 18:00:00'))
-            ->setEndDateTime(new \DateTimeImmutable('+21 days 20:00:00'))
-            ->setStatus(EventStatus::Cancelled) // Événement annulé
-            ->addImage($image8)
-            ->addImage($image4)
-            ->addImage($image5)
-            ->addEventCategory($eventCategoryExposition);
-            
-        $manager->persist($event2);
-        
-        // Événement 3: Marché des créateurs
-        $event3 = new Event();
-        $event3->setTitle('Marché des créateurs')
-            ->setShortDescription('Rencontrez les créateurs locaux et découvrez leurs créations uniques')
-            ->setLongDescription('Le marché des créateurs est l\'occasion idéale pour découvrir les talents locaux et leurs créations artisanales uniques. Bijoux, décorations, accessoires de mode, art... il y en a pour tous les goûts ! Venez nombreux soutenir l\'artisanat local.')
-            ->setLocation('Place du marché, Nantes')
-            ->setStartDateTime(new \DateTimeImmutable('+30 days 10:00:00'))
-            ->setEndDateTime(new \DateTimeImmutable('+30 days 18:00:00'))
-            ->setStatus(EventStatus::Published) // Événement publié
-            ->addImage($image9)
-            ->addEventCategory($eventCategoryMarche);
-            
-        $manager->persist($event3);
-        
-        // Événement 4: Atelier en cours de préparation
-        $event4 = new Event();
-        $event4->setTitle('Atelier de décoration durable')
-            ->setShortDescription('Créez des décorations écologiques pour votre intérieur')
-            ->setLongDescription('Dans cet atelier, vous apprendrez à créer des décorations pour votre maison à partir de matériaux recyclés et durables. Une façon créative de donner une seconde vie à vos objets du quotidien tout en décorant votre intérieur avec style.')
-            ->setLocation('MakerSpace, 25 rue de l\'Innovation, Bordeaux')
-            ->setStartDateTime(new \DateTimeImmutable('+45 days 15:00:00'))
-            ->setEndDateTime(new \DateTimeImmutable('+45 days 18:30:00'))
-            ->setStatus(EventStatus::Draft) // Événement en brouillon
-            ->addImage($image1)
-            ->addEventCategory($eventCategoryAtelier)
-            ->addEventCategory($eventCategoryFormation);
-            
-        $manager->persist($event4);
-        
-        // Événement 5: Conférence terminée
-        $event5 = new Event();
-        $event5->setTitle('Conférence sur l\'artisanat local')
-            ->setShortDescription('Échanges autour de l\'importance de l\'artisanat dans l\'économie locale')
-            ->setLongDescription('Une conférence passionnante sur la place de l\'artisanat dans notre économie locale, avec des témoignages de créateurs et d\'experts du secteur. Un moment d\'échange et de partage autour de valeurs communes.')
-            ->setLocation('Centre culturel, Toulouse')
-            ->setStartDateTime(new \DateTimeImmutable('-15 days 10:00:00'))
-            ->setEndDateTime(new \DateTimeImmutable('-15 days 12:30:00'))
-            ->setStatus(EventStatus::Archived) // Événement archivé
-            ->addImage($image8)
-            ->addEventCategory($eventCategoryConference);
-            
-        $manager->persist($event5);
-        
-        // Gestion des relations Event-User via l'entité EventUser
-        
-        // Clara organise l'atelier de création de bijoux
-        $event1->addUserWithStatus($creator, EventUserStatus::ORGANIZER);
-        
-        // Jules organise l'exposition d'art contemporain (annulée)
-        $event2->addUserWithStatus($creator2, EventUserStatus::ORGANIZER);
-        
-        // Les deux créateurs organisent le marché des créateurs
-        $event3->addUserWithStatus($creator, EventUserStatus::ORGANIZER);
-        $event3->addUserWithStatus($creator2, EventUserStatus::ORGANIZER);
-        
-        // Clara organise l'atelier de décoration durable (en brouillon)
-        $event4->addUserWithStatus($creator, EventUserStatus::ORGANIZER);
-        
-        // Jules organisait la conférence (archivée)
-        $event5->addUserWithStatus($creator2, EventUserStatus::ORGANIZER);
-        
-        // L'utilisateur John est intéressé par l'atelier de création
-        $event1->addUserWithStatus($user, EventUserStatus::INTERESTED);
-        
-        // John participe à l'exposition d'art (même si elle est annulée)
-        $event2->addUserWithStatus($user, EventUserStatus::PARTICIPANT);
-        
-        // L'admin est invitée à tous les événements
-        $event1->addUserWithStatus($admin, EventUserStatus::INVITED);
-        $event2->addUserWithStatus($admin, EventUserStatus::INVITED);
-        $event3->addUserWithStatus($admin, EventUserStatus::INVITED);
-        $event4->addUserWithStatus($admin, EventUserStatus::INVITED);
-        $event5->addUserWithStatus($admin, EventUserStatus::PARTICIPANT); // A participé à l'événement archivé
-        
-        // Jules est intéressé par l'atelier de Clara
-        $event1->addUserWithStatus($creator2, EventUserStatus::INTERESTED);
-        
-        // Clara participe à l'exposition de Jules
-        $event2->addUserWithStatus($creator, EventUserStatus::PARTICIPANT);
-        
-        // John a participé à la conférence archivée
-        $event5->addUserWithStatus($user, EventUserStatus::PARTICIPANT);
+            // Ajouter quelques participants/intéressés
+            if ($index % 2 === 0) {
+                $event->addUserWithStatus($users[$index % count($users)], EventUserStatus::PARTICIPANT);
+            }
+            if ($index % 3 === 0) {
+                $event->addUserWithStatus($users[($index + 1) % count($users)], EventUserStatus::INTERESTED);
+            }
 
-        // Création des posts
+            $manager->persist($event);
+            $events[] = $event;
+        }        // Création des posts (plus de contenu varié)
+        $posts = [];
         
-        // Posts du créateur Clara
-        $post1 = new Post();
-        $post1->setTitle('Comment j\'ai commencé la céramique')
-            ->setContent('Découvrez mon parcours dans le monde de la céramique, des premiers essais aux créations actuelles. La céramique est un art ancestral qui demande patience et précision.
+        $postData = [
+            ['Comment j\'ai commencé la céramique', 'Découvrez mon parcours dans le monde de la céramique, des premiers essais aux créations actuelles...', '-30 days', true],
+            ['Les tendances bijouterie 2025', 'Les bijoux artisanaux connaissent un véritable renouveau ces dernières années...', '-25 days', true],
+            ['Nouvelle collection été', 'Je travaille actuellement sur ma nouvelle collection pour l\'été...', '-5 days', false],
+            ['L\'art du travail du bois', 'Le bois est un matériau noble qui offre d\'infinies possibilités créatives...', '-45 days', true],
+            ['Retour sur mon exposition', 'La semaine dernière s\'est achevée mon exposition à Lyon...', '-8 days', true],
+            ['Bienvenue sur Awen', 'Chers artisans et amateurs d\'art, nous sommes ravis de vous accueillir...', '-60 days', true],
+            ['Mon expérience à l\'atelier', 'Le week-end dernier, j\'ai participé à un atelier formidable...', '-3 days', true],
+            ['Techniques de forge moderne', 'La forge évolue avec son temps tout en conservant ses traditions...', '-20 days', true],
+            ['Mode éthique et durable', 'L\'industrie textile se réinvente vers plus de durabilité...', '-15 days', true],
+            ['Secrets de la maroquinerie', 'Travailler le cuir demande patience et précision...', '-12 days', true],
+            ['Art du verre soufflé', 'Le verre en fusion offre des possibilités créatives infinies...', '-18 days', true],
+            ['Cosmétiques fait maison', 'Fabriquer ses propres produits de beauté devient tendance...', '-10 days', true],
+            ['Photographie et artisanat', 'Comment capturer l\'essence du travail artisanal...', '-22 days', true],
+            ['Papeterie artisanale', 'L\'art de créer du papier unique et personnalisé...', '-35 days', true],
+            ['Sculpture sur pierre', 'La pierre révèle ses secrets sous le ciseau de l\'artisan...', '-28 days', true],
+            ['Atelier de groupe réussi', 'Retour sur notre dernier atelier collectif...', '-6 days', true],
+            ['Préparation salon automne', 'Nous préparons activement le salon d\'automne...', '-4 days', false],
+            ['Collaboration entre artisans', 'L\'union fait la force, même dans l\'artisanat...', '-14 days', true],
+            ['Matériaux écologiques', 'Vers des créations plus respectueuses de l\'environnement...', '-16 days', true],
+            ['Innovation et tradition', 'Comment concilier savoir-faire ancestral et techniques modernes...', '-24 days', true],
+            ['Portrait d\'un créateur', 'Rencontre avec un artisan passionné de son métier...', '-26 days', true],
+            ['Conseils débutants', 'Mes conseils pour se lancer dans l\'artisanat...', '-32 days', true],
+            ['Événement communautaire', 'Retour sur notre dernière rencontre de créateurs...', '-7 days', true],
+            ['Tendances décoration 2025', 'Les nouvelles tendances en matière de décoration intérieure...', '-11 days', true],
+            ['Histoire de mon atelier', 'Comment j\'ai créé mon espace de travail idéal...', '-38 days', true]
+        ];
 
-J\'ai commencé il y a maintenant 5 ans, après avoir suivi un atelier d\'initiation qui m\'a complètement passionnée. Depuis, je n\'ai cessé d\'explorer différentes techniques et de perfectionner mon style.
+        foreach ($postData as $index => $data) {
+            $post = new Post();
+            $post->setTitle($data[0])
+                ->setContent($data[1] . ' Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.')
+                ->setCreatedAt(new \DateTimeImmutable($data[2]))
+                ->setIsPublished($data[3]);
 
-Dans cet article, je partage avec vous les étapes clés de mon parcours, les difficultés rencontrées et comment j\'ai réussi à développer ma propre ligne de produits en céramique.')
-            ->setAuthor($creator)
-            ->setCreatedAt(new \DateTimeImmutable('-30 days'))
-            ->setIsPublished(true)
-            ->addImage($image1)
-            ->addImage($image2);
-        $manager->persist($post1);
+            // Alterner entre créateurs, utilisateurs et admin
+            if ($index % 4 === 0) {
+                $post->setAuthor($creators[$index % count($creators)]);
+            } elseif ($index % 4 === 1) {
+                $post->setAuthor($creators[($index + 1) % count($creators)]);
+            } elseif ($index % 4 === 2) {
+                $post->setAuthor($users[$index % count($users)]);
+            } else {
+                $post->setAuthor($admin);
+            }
+
+            // Ajouter 1-2 images par post
+            $imageCount = ($index % 2) + 1;
+            for ($i = 0; $i < $imageCount; $i++) {
+                $imageIndex = ($index + $i) % count($images);
+                $post->addImage($images[$imageIndex]);
+            }
+
+            $manager->persist($post);
+            $posts[] = $post;
+        }        // Création de quelques commandes d'exemple
+        $orders = [];
         
-        $post2 = new Post();
-        $post2->setTitle('Les tendances de la bijouterie artisanale')
-            ->setContent('Les bijoux artisanaux connaissent un véritable renouveau ces dernières années. De plus en plus de personnes se tournent vers des pièces uniques, fabriquées à la main avec des matériaux de qualité.
-
-Parmi les tendances actuelles, on observe un retour aux matériaux naturels comme le bois, la pierre et les perles organiques. Les créations minimalistes et épurées sont également très recherchées, tout comme les bijoux inspirés de formes géométriques.
-
-Dans ce post, je vous présente les tendances qui marqueront cette année et comment les intégrer à votre style personnel.')
-            ->setAuthor($creator)
-            ->setCreatedAt(new \DateTimeImmutable('-15 days'))
-            ->setIsPublished(true)
-            ->addImage($image3);
-        $manager->persist($post2);
-        
-        $post3 = new Post();
-        $post3->setTitle('À venir : nouvelle collection été')
-            ->setContent('Je travaille actuellement sur ma nouvelle collection pour l\'été. Des couleurs vives, des matières légères et des designs rafraîchissants seront à l\'honneur.
-
-Cette collection s\'inspire de mes voyages récents et de mon amour pour la nature. Vous y trouverez des pièces uniques qui apporteront une touche d\'originalité à votre intérieur ou à votre tenue.
-
-Restez connectés pour découvrir les premiers aperçus dans les semaines à venir !')
-            ->setAuthor($creator)
-            ->setCreatedAt(new \DateTimeImmutable('-5 days'))
-            ->setIsPublished(false) // Brouillon
-            ->addImage($image2);
-        $manager->persist($post3);
-        
-        // Posts du créateur Jules
-        $post4 = new Post();
-        $post4->setTitle('L\'art du travail du bois')
-            ->setContent('Le bois est un matériau noble qui offre d\'infinies possibilités créatives. Dans cet article, je vous partage ma passion pour la sculpture sur bois et les techniques que j\'ai développées au fil des années.
-
-Chaque essence de bois possède ses propres caractéristiques : dureté, grain, couleur, veinage... Apprendre à les connaître et à les respecter est essentiel pour créer des pièces qui mettent en valeur la beauté naturelle du matériau.
-
-Je vous invite à découvrir mon approche de la sculpture, entre tradition et modernité, et comment je donne vie à mes idées à travers ce médium ancestral.')
-            ->setAuthor($creator2)
-            ->setCreatedAt(new \DateTimeImmutable('-45 days'))
-            ->setIsPublished(true)
-            ->addImage($image4)
-            ->addImage($image5)
-            ->addImage($image6);
-        $manager->persist($post4);
-        
-        $post5 = new Post();
-        $post5->setTitle('Retour sur mon exposition à Lyon')
-            ->setContent('La semaine dernière s\'est achevée mon exposition à la Galerie Moderna de Lyon. Ce fut une expérience incroyable de pouvoir partager mon travail avec un public aussi enthousiaste et curieux.
-
-Pendant dix jours, j\'ai eu l\'opportunité de présenter mes dernières créations et d\'échanger avec les visiteurs sur mon processus créatif. Ces conversations enrichissantes m\'ont apporté de nouvelles perspectives et idées pour mes futurs projets.
-
-Je tiens à remercier tous ceux qui ont fait le déplacement et qui ont contribué à faire de cet événement un succès. Votre soutien est précieux et me motive à continuer à créer et à innover.')
-            ->setAuthor($creator2)
-            ->setCreatedAt(new \DateTimeImmutable('-8 days'))
-            ->setIsPublished(true)
-            ->addImage($image8);
-        $manager->persist($post5);
-        
-        // Post de l'admin
-        $post6 = new Post();
-        $post6->setTitle('Bienvenue sur la plateforme Awen')
-            ->setContent('Chers artisans et amateurs d\'art,
-
-Nous sommes ravis de vous accueillir sur Awen, la nouvelle plateforme dédiée à l\'artisanat et à la création artistique locale. Notre ambition est de créer un espace où créateurs et passionnés peuvent se rencontrer, échanger et partager leur amour pour le fait-main.
-
-Sur Awen, vous pourrez découvrir des créations uniques, suivre vos artisans préférés, participer à des événements exclusifs et même commander directement auprès des créateurs.
-
-Nous vous invitons à explorer le site, à créer votre profil et à commencer cette aventure avec nous. N\'hésitez pas à nous faire part de vos suggestions pour améliorer l\'expérience Awen.')
-            ->setAuthor($admin)
-            ->setCreatedAt(new \DateTimeImmutable('-60 days'))
-            ->setIsPublished(true)
-            ->addImage($image9);
-        $manager->persist($post6);
-        
-        // Post utilisateur standard
-        $post7 = new Post();
-        $post7->setTitle('Mon expérience à l\'atelier de bijoux')
-            ->setContent('Le week-end dernier, j\'ai eu la chance de participer à l\'atelier de création de bijoux animé par Clara. Ce fut une expérience enrichissante que je souhaite partager avec vous.
-
-En trois heures, j\'ai pu apprendre les bases de la création de bijoux en perles naturelles et repartir avec un magnifique bracelet personnalisé. Clara est une formatrice patiente et pédagogue qui sait transmettre sa passion.
-
-L\'ambiance était conviviale et le petit groupe a permis d\'avoir un suivi personnalisé. Je recommande vivement cet atelier à tous ceux qui souhaitent s\'initier à la création de bijoux ou simplement passer un moment créatif et agréable.')
-            ->setAuthor($user)
-            ->setCreatedAt(new \DateTimeImmutable('-3 days'))
-            ->setIsPublished(true)
-            ->addImage($image3)
-            ->addImage($image7);
-        $manager->persist($post7);
-
-        // Création des commandes
-        
-        // Commande 1 : Commande complétée par l'utilisateur de base
+        // Commande 1 : Commande livrée
         $order1 = new Order();
-        $order1->setUser($user)
+        $order1->setUser($users[0])
             ->setStatus(OrderStatus::Delivered)
             ->setPaymentMethod('card')
-            ->setShippingCost('500') // 5.00 EUR
-            ->setTotalHT('4165') // 41.65 EUR
-            ->setTvaAmount('833') // 8.33 EUR (20% de 41.65)
+            ->setShippingCost('500')
+            ->setTotalHT('4165')
+            ->setTvaAmount('833')
             ->setShippingAddress('15 rue des Lilas, 75001 Paris')
             ->setBillingAddress('15 rue des Lilas, 75001 Paris')
             ->setExpectedDeliveryDate(new \DateTimeImmutable('-5 days'))
@@ -548,19 +473,19 @@ L\'ambiance était conviviale et le petit groupe a permis d\'avoir un suivi pers
         
         $orderDetail1 = new OrderDetail();
         $orderDetail1->setOrderRef($order1)
-            ->setProduct($product1)
+            ->setProduct($products[0])
             ->setQuantity(1)
-            ->setUnitPriceHT('1666') // 16.66 EUR
-            ->setUnitPriceTTC('1999') // 19.99 EUR
+            ->setUnitPriceHT('1666')
+            ->setUnitPriceTTC('1999')
             ->setTotalPriceHT('1666')
             ->setTotalPriceTTC('1999');
         
         $orderDetail2 = new OrderDetail();
         $orderDetail2->setOrderRef($order1)
-            ->setProduct($product2)
+            ->setProduct($products[1])
             ->setQuantity(1)
-            ->setUnitPriceHT('2499') // 24.99 EUR
-            ->setUnitPriceTTC('2999') // 29.99 EUR
+            ->setUnitPriceHT('2499')
+            ->setUnitPriceTTC('2999')
             ->setTotalPriceHT('2499')
             ->setTotalPriceTTC('2999');
             
@@ -568,21 +493,21 @@ L\'ambiance était conviviale et le petit groupe a permis d\'avoir un suivi pers
         $manager->persist($orderDetail1);
         $manager->persist($orderDetail2);
         
-        // Commande 2 : Commande en cours de traitement
+        // Commande 2 : Commande en cours
         $order2 = new Order();
         $order2->setUser($admin)
             ->setStatus(OrderStatus::Processing)
             ->setPaymentMethod('paypal')
-            ->setShippingCost('0') // Livraison gratuite
-            ->setTotalHT('8325') // 83.25 EUR
-            ->setTvaAmount('1665') // 16.65 EUR (20% de 83.25)
+            ->setShippingCost('0')
+            ->setTotalHT('8325')
+            ->setTvaAmount('1665')
             ->setShippingAddress('42 avenue des Champs-Élysées, 75008 Paris')
             ->setBillingAddress('42 avenue des Champs-Élysées, 75008 Paris')
             ->setExpectedDeliveryDate(new \DateTimeImmutable('+5 days'));
         
         $orderDetail3 = new OrderDetail();
         $orderDetail3->setOrderRef($order2)
-            ->setProduct($product3)
+            ->setProduct($products[2])
             ->setQuantity(1)
             ->setUnitPriceHT('8325')
             ->setUnitPriceTTC('9990')
@@ -592,27 +517,27 @@ L\'ambiance était conviviale et le petit groupe a permis d\'avoir un suivi pers
         $manager->persist($order2);
         $manager->persist($orderDetail3);
         
-        // Commande 3 : Commande en attente de paiement
+        // Commande 3 : Commande en attente
         $order3 = new Order();
-        $order3->setUser($user)
+        $order3->setUser($users[1])
             ->setStatus(OrderStatus::Pending)
             ->setPaymentMethod('card')
-            ->setShippingCost('500') // 5.00 EUR
-            ->setTotalHT('3332') // 33.32 EUR
-            ->setTvaAmount('666') // 6.66 EUR (20% de 33.32)
-            ->setShippingAddress('15 rue des Lilas, 75001 Paris')
-            ->setBillingAddress('15 rue des Lilas, 75001 Paris')
+            ->setShippingCost('500')
+            ->setTotalHT('3332')
+            ->setTvaAmount('666')
+            ->setShippingAddress('25 rue de la Paix, 69000 Lyon')
+            ->setBillingAddress('25 rue de la Paix, 69000 Lyon')
             ->setExpectedDeliveryDate(new \DateTimeImmutable('+7 days'));
         
         $orderDetail4 = new OrderDetail();
         $orderDetail4->setOrderRef($order3)
-            ->setProduct($product1)
+            ->setProduct($products[0])
             ->setQuantity(2)
             ->setUnitPriceHT('1666')
             ->setUnitPriceTTC('1999')
             ->setTotalPriceHT('3332')
             ->setTotalPriceTTC('3998')
-            ->setDiscountPercentage('10.00'); // 10% de réduction
+            ->setDiscountPercentage('10.00');
             
         $manager->persist($order3);
         $manager->persist($orderDetail4);
