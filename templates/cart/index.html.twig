@@ -107,13 +107,23 @@
                                     <span class="text-lg font-medium text-gray-900">{{ (total / 100)|number_format(2, ',', ' ') }} €</span>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="mt-6">
-                            <a href="#" 
-                               class="w-full bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90 text-center block">
-                                Passer la commande
-                            </a>
+                        </div>                        <div class="mt-6">
+                            {% if app.user %}
+                                <form action="{{ path('app_cart_checkout') }}" method="post">
+                                    <input type="hidden" name="_token" value="{{ csrf_token('checkout') }}">
+                                    <button type="submit" class="w-full bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90 text-center">
+                                        Passer la commande
+                                    </button>
+                                </form>
+                            {% else %}
+                                <div class="text-center">
+                                    <p class="text-sm text-gray-600 mb-4">Vous devez être connecté pour passer commande</p>
+                                    <a href="{{ path('app_login') }}" 
+                                       class="w-full bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90 text-center block">
+                                        Se connecter
+                                    </a>
+                                </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
