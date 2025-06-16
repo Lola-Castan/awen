@@ -1,4 +1,4 @@
-<nav class="bg-white shadow" x-data="{ open: false, userMenuOpen: false }">
+<nav class="bg-white shadow" x-data="{ open: false, userMenuOpen: false }" @click.away="open = false; userMenuOpen = false">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div class="flex justify-between items-center">
             <!-- Logo -->
@@ -83,8 +83,9 @@
                         <a href="{{ path('app_login') }}" class="text-gray-500 hover:text-gray-900">Connexion</a>
                         <a href="{{ path('app_register') }}" class="text-gray-500 hover:text-gray-900">Inscription</a>
                     </div>
-                {% endif %}                <!-- Mobile user icon -->
-                <div class="md:hidden">
+                {% endif %}                <!-- Mobile user icon and burger menu -->
+                <div class="md:hidden flex items-center space-x-3">
+                    <!-- User icon -->
                     <button @click="userMenuOpen = !userMenuOpen" class="focus:outline-none">
                         {% if app.user and app.user.profilePicture %}
                             <img src="{{ asset('uploads/profile_pictures/' ~ app.user.profilePicture) }}"
@@ -95,26 +96,79 @@
                                 <path d="M10 12a5 5 0 100-10 5 5 0 000 10zm0 2c-3 0-9 1.5-9 4.5V20h18v-1.5c0-3-6-4.5-9-4.5z"/>
                             </svg>
                         {% endif %}
+                    </button>                    <!-- Burger menu button -->
+                    <button @click="open = !open" class="focus:outline-none p-2">
+                        <svg class="h-6 w-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                                  :d="open ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'"/>
+                        </svg>
                     </button>
                 </div>
+            </div>        </div>        <!-- Mobile burger menu -->
+        <div x-show="open" class="md:hidden border-t border-gray-200 mt-4 pt-4">
+            <div class="space-y-2 px-4 pb-4">
+                <a href="{{ path('app_product_index') }}" 
+                   class="block text-gray-700 hover:text-primary font-medium py-2"
+                   @click="open = false">
+                    Produits
+                </a>
+                <a href="{{ path('app_creator_index') }}" 
+                   class="block text-gray-700 hover:text-primary font-medium py-2"
+                   @click="open = false">
+                    Créateurs
+                </a>
+                <a href="{{ path('app_event_index') }}" 
+                   class="block text-gray-700 hover:text-primary font-medium py-2"
+                   @click="open = false">
+                    Événements
+                </a>
             </div>
-        </div>
-
-        <!-- Mobile user menu -->
-        <div x-show="userMenuOpen" class="md:hidden mt-4 space-y-2">
-            {% if app.user %}
-                {% if is_granted('ROLE_CREATOR') %}
-                    <a href="{{ path('app_creator_dashboard') }}" class="block text-gray-700">Espace créateur</a>
+        </div>        <!-- Mobile user menu -->
+        <div x-show="userMenuOpen" class="md:hidden border-t border-gray-200 mt-4 pt-4">
+            <div class="space-y-2 px-4 pb-4">
+                {% if app.user %}
+                    {% if is_granted('ROLE_CREATOR') %}
+                        <a href="{{ path('app_creator_dashboard') }}" 
+                           class="block text-gray-700 hover:text-primary font-medium py-2"
+                           @click="userMenuOpen = false">
+                            Espace créateur
+                        </a>
+                    {% endif %}
+                    <a href="{{ path('app_profile_show', {'username': app.user.username}) }}" 
+                       class="block text-gray-700 hover:text-primary font-medium py-2"
+                       @click="userMenuOpen = false">
+                        Mon profil
+                    </a>
+                    <a href="{{ path('app_account_settings') }}" 
+                       class="block text-gray-700 hover:text-primary font-medium py-2"
+                       @click="userMenuOpen = false">
+                        Mon compte
+                    </a>
+                    <a href="{{ path('app_account_orders') }}" 
+                       class="block text-gray-700 hover:text-primary font-medium py-2"
+                       @click="userMenuOpen = false">
+                        Mes commandes
+                    </a>
+                    <div class="border-t border-gray-100 my-2"></div>
+                    <a href="{{ path('app_logout') }}" 
+                       class="block text-red-600 hover:text-red-700 font-medium py-2"
+                       @click="userMenuOpen = false">
+                        Déconnexion
+                    </a>
+                {% else %}
+                    <a href="{{ path('app_login') }}" 
+                       class="block text-gray-700 hover:text-primary font-medium py-2"
+                       @click="userMenuOpen = false">
+                        Connexion
+                    </a>
+                    <a href="{{ path('app_register') }}" 
+                       class="block text-gray-700 hover:text-primary font-medium py-2"
+                       @click="userMenuOpen = false">
+                        Inscription
+                    </a>
                 {% endif %}
-                <a href="{{ path('app_profile_show', {'username': app.user.username}) }}" class="block text-gray-700">Mon profil</a>
-                <a href="{{ path('app_account_settings') }}" class="block text-gray-700">Mon compte</a>
-                <a href="{{ path('app_account_orders') }}" class="block text-gray-700">Mes commandes</a>
-                <a href="{{ path('app_logout') }}" class="block text-gray-700">Déconnexion</a>
-            {% else %}
-                <a href="{{ path('app_login') }}" class="block text-gray-700">Connexion</a>
-                <a href="{{ path('app_register') }}" class="block text-gray-700">Inscription</a>
-            {% endif %}
-        </div>        <!-- Mobile search bar under all nav content -->
+            </div>
+        </div><!-- Mobile search bar under all nav content -->
         <div class="block md:hidden px-4 pt-4 pb-2">
             {{ form_start(mobileForm, {'attr': {'class': 'relative', 'action': path('app_search'), 'method': 'get'}}) }}
                 {{ form_widget(mobileForm.query, {
