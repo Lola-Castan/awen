@@ -4,9 +4,9 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
+        <link rel="icon" href="{{ asset('uploads/images/favicon.svg') }}" type="image/svg+xml">
         <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&family=Open+Sans&display=swap" rel="stylesheet">
-          {% block stylesheets %}
+        {% block stylesheets %}
             <!-- CDN essentiels -->
             <script src="https://cdn.tailwindcss.com"></script>
             <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -119,17 +119,17 @@
         <!-- Footer -->
         <footer class="text-white mt-10">
             <!-- Bloc haut -->
-            <div class="bg-primary px-6 py-8">
-                <div class="space-y-4 text-sm">
-
-                <a href="{{ path('app_home') }}" class="py-1 font-semibold">Accueil</a>
+            <div class="bg-primary px-6 py-8 space-y-4 text-sm flex flex-col md:flex-row md:space-x-6 space-y-2 md:space-y-0">
+                <div>
+                    <a href="{{ path('app_home') }}" class="py-1 font-semibold">Accueil</a>
+                </div>
                 <!-- Découvrir -->
                 <div>
                     <button class="w-full flex items-center justify-between font-semibold dropdown-toggle">
                     <span>Découvrir</span>
-                    <span class="transition-transform">&#x25BC;</span>
+                    <span class="transition-transform rotate-180">&#x25BC;</span>
                     </button>
-                    <div class="dropdown-menu flex flex-col hidden ml-2 mt-2 text-white/90">
+                    <div class="dropdown-menu flex flex-col ml-2 mt-2 text-white/90">
                         <a href="{{ path('app_product_index') }}" class="py-1">Les produits</a>
                         <a href="{{ path('app_creator_index') }}" class="py-1">Les créateurs</a>
                         <a href="{{ path('app_event_index') }}" class="py-1">Les événements</a>
@@ -165,23 +165,23 @@
                 <div>
                     <button class="w-full flex items-center justify-between font-semibold dropdown-toggle">
                     <span>Aide</span>
-                    <span class="transition-transform rotate-180">&#x25BC;</span>
+                    <span class="transition-transform">&#x25BC;</span>
                     </button>
-                    <div class="dropdown-menu ml-2 mt-2 text-white/90">
+                    <div class="dropdown-menu ml-2 mt-2 text-white/90 hidden">
                     <p class="py-1">Centre d’aide</p>
                     <p class="py-1">Paramètre de confidentialité</p>
                     </div>
-                </div>
-
                 </div>
             </div>
 
             <!-- Bloc bas -->
             <div class="bg-[#242424] px-6 py-6 text-sm space-y-4">
                 <div class="flex flex-col md:flex-row md:space-x-6 space-y-2 md:space-y-0">
-                    <a href="#" class="hover:underline">Condition d'utilisation</a>
-                    <a href="#" class="hover:underline">Confidentialité</a>
-                    <a href="#" class="hover:underline">Cookies</a>
+                    <a href="#" class="hover:underline">CGU utilisateurs</a>
+                    <a href="#" class="hover:underline">CGU créateurs</a>
+                    <a href="#" class="hover:underline">Conditions générales de ventes</a>
+                    <a href="#" class="hover:underline">Mentions légales</a>
+                    <a href="#" class="hover:underline">Politique de confidentialité</a>
                 </div>
             </div>
             <div class="bg-white text-sm space-y-4 text-center py-2">
@@ -199,45 +199,5 @@
             });
         });
         </script>
-
-
-        {# <footer class="bg-white mt-12 py-8 border-t border-gray-200">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
-                    <div>
-                        <h3 class="text-lg font-semibold text-gray-800 mb-4">À propos</h3>
-                        <p class="text-gray-600">Awen est une plateforme dédiée aux créateurs et artisans pour présenter et vendre leurs créations uniques.</p>
-                    </div>
-                    <div>
-                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Navigation</h3>
-                        <ul class="space-y-2">
-                            <li><a href="{{ path('app_home') }}" class="text-gray-600 hover:text-primary">Accueil</a></li>
-                            <li><a href="{{ path('app_creator_index') }}" class="text-gray-600 hover:text-primary">Créateurs</a></li>
-                            <li><a href="{{ path('app_product_index') }}" class="text-gray-600 hover:text-primary">Produits</a></li>
-                            <li><a href="{{ path('app_event_index') }}" class="text-gray-600 hover:text-primary">Événements</a></li>
-                            <li><a href="{{ path('app_post_index') }}" class="text-gray-600 hover:text-primary">Posts</a></li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Informations</h3>
-                        <ul class="space-y-2">
-                            <li><a href="#" class="text-gray-600 hover:text-primary">Conditions d'utilisation</a></li>
-                            <li><a href="#" class="text-gray-600 hover:text-primary">Politique de confidentialité</a></li>
-                            <li><a href="#" class="text-gray-600 hover:text-primary">Mentions légales</a></li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h3 class="text-lg font-semibold text-gray-800 mb-4">Contact</h3>
-                        <ul class="space-y-2">
-                            <li class="text-gray-600">Email: contact@awen.com</li>
-                            <li class="text-gray-600">Téléphone: 01 23 45 67 89</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="border-t border-gray-200 mt-8 pt-8 text-center text-gray-500">
-                    <p>&copy; {{ "now"|date('Y') }} Awen. Tous droits réservés.</p>
-                </div>
-            </div>
-        </footer> #}
     </body>
 </html>
