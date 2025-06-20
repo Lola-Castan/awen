@@ -1,10 +1,10 @@
 services:
   php:
-    image: uruknara/awen:latest
+    image: lcastan/awen:develop
     ports:
-      - "8080:80"
+      - "8082:80"
     volumes:
-      - /home/awen/web:/var/www/html
+      - web:/var/www/html
     environment:
       # Remplacez par vos identifiants Mailtrap
       MAILER_DSN: "smtp://49bde0defd777d:e0d3123c173af3@sandbox.smtp.mailtrap.io:2525"
@@ -13,7 +13,7 @@ services:
       - database
 
   database:
-    image: mysql:8.0
+    image: mysql:9.1
     environment:
       MYSQL_DATABASE: app
       MYSQL_USER: app
@@ -28,3 +28,6 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
+
+volumes:
+  web:

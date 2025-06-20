@@ -1,4 +1,4 @@
-FROM php:8.3-apache
+FROM php:8.4-apache
 
 RUN apt-get update && apt-get install -y libicu-dev libzip-dev unzip git \
     && docker-php-ext-install intl pdo pdo_mysql zip opcache bcmath
@@ -15,6 +15,8 @@ RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|g' /e
 
 RUN chown -R www-data:www-data /var/www/html/public
 
-EXPOSE 80
+# TODO Add doctrine command
+
+EXPOSE 8082
 
 CMD ["apache2-foreground"]
