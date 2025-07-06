@@ -27,11 +27,10 @@ class ProductType extends AbstractType
             ->add('price')
             ->add('showcaseProduct')
             ->add('status', ChoiceType::class, [
-                'choices' => [
-                    'Brouillon' => ProductStatus::Draft,
-                    'Publié' => ProductStatus::Published,
-                    'Archivé' => ProductStatus::Archived,
-                ],
+                'choices' => array_combine(
+                    array_map(fn($case) => $case->getLabel(), ProductStatus::cases()),
+                    ProductStatus::cases()
+                ),
             ])
             // todo : logged in user should be asigned as creator (when not admin)
             ->add('creator', EntityType::class, [

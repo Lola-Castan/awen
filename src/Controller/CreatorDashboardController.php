@@ -198,15 +198,23 @@ class CreatorDashboardController extends AbstractController
 		return $this->redirectToRoute('app_creator_product_images', ['id' => $product->getId()]);
 	}
 	
+	/**
+	 * Changes the status of a product in the creator's dashboard (publish/draft/archive).
+	 *
+	 * @param Product $product The product entity to update
+	 * @param string $status The new status to set ('publish', 'draft', 'archive')
+	 * @param EntityManagerInterface $entityManager Doctrine entity manager
+	 * @return Response Redirects to products list with success message
+	 * @throws AccessDeniedException If current user is not the product owner
+	 * @throws NotFoundException If status is invalid
+	 */
 	#[Route('/product/{id}/status/{status}', name: 'app_creator_product_status')]
 	public function changeProductStatus(Product $product, string $status, EntityManagerInterface $entityManager): Response
 	{
-		// Vérifier que le produit appartient bien au créateur connecté
 		if ($product->getCreator() !== $this->getUser()) {
 			throw $this->createAccessDeniedException('Vous n\'êtes pas autorisé à modifier ce produit.');
 		}
 		
-		// Vérifier que le statut est valide
 		$newStatus = match ($status) {
 			'publish' => ProductStatus::Published,
 			'draft' => ProductStatus::Draft,
@@ -225,7 +233,8 @@ class CreatorDashboardController extends AbstractController
 		];
 		
 		$this->addFlash('success', sprintf('Votre produit a été %s avec succès !', $statusMessages[$status]));
-		return $this->redirectToRoute('app_creator_products');	}
+		return $this->redirectToRoute('app_creator_products');
+	}
 	
 	#[Route('/orders', name: 'app_creator_dashboard_orders')]
 	public function orders(EntityManagerInterface $entityManager): Response
