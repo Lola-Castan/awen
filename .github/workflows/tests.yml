@@ -1,0 +1,31 @@
+name: Run PHPUnit Tests
+
+on:
+  push:
+    branches: [ develop ]
+  pull_request:
+    branches: [ develop ]
+
+jobs:
+  phpunit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.3
+          extensions: pdo_sqlite
+          coverage: none
+
+      - name: Install Composer dependencies
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Prepare test database schema
+        run: php bin/console doctrine:schema:create --env=test
+
+      - name: Run PHPUnit tests
+        run: php bin/phpunit --testdox
